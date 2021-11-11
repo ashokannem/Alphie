@@ -1,0 +1,9 @@
+
+.fancyDropdown .noMessages {
+	height: 250px;
+}
+
+.fancyDropdown .messageContainer {
+	max-height: 350px;
+	overflow: scroll;
+}

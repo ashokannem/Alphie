@@ -1,0 +1,336 @@
+<div class="d-flex flex-column flex-lg-row h-lg-full">
+
+	<div class="h-screen flex-grow-1">
+
+		<div class="bg-surface-primary h-full">
+
+			<div class="d-xl-flex h-full">
+
+				<div class="collapse collapse-horizontal d-xl-block flex-xl-none w-xl-80 w-xxl-87 overlap-20 h-screen overflow-y-lg-auto" [collapse]="!leftBarCollapse">
+
+					<aside class="h-full overflow-y-xl-auto bg-surface-primary p-6 p-xxl-8 border-end-xl">
+
+						<div class="vstack gap-7">
+							<div class="">
+								<div class="d-flex justify-content-between align-items-center pb-4 border-bottom">
+									<h6 class="h4 font-semibold mb-0">
+										Messages
+									</h6>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mt-sm-3 mt-md-0" (click)="openModal(newModalTemplate)" aria-label="New">
+                                        <i class="fal fa-plus"></i>
+                                    </button>
+								</div>
+							</div>
+
+							<div class="vstack gap-2" *ngIf="teamConversations.length">
+
+								<h6 class="font-semibold text-muted">
+									<i class="bi bi-chat-left-dots-fill me-2"></i>Team Messages
+								</h6>
+
+								<div class="list-group list-group-flush" *ngFor="let conversation of teamConversations">
+									<div class="list-group-item d-flex align-items-center px-0 pl-2" [ngClass]=" conversation.userLastRead < (conversation.lastMessage.index+1) ? 'unread' : '' ">
+                                        <div class="hstack flex-wrap w-full">
+                                            <div class="me-3 text-white">
+                                                <div class="position-relative d-inline-block text-current">
+                                                    <div class="avatar rounded-circle">
+                                                        <img  [src]="conversation.icon">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <a [routerLink] (click)="selectChat(conversation.id)" class="d-block h6 me-auto stretched-link text-decoration-none">{{ conversation.title }}</a>
+                                                    <span class="text-muted text-xs ms-2">{{ conversation.lastMessage.createdAt | date:'hh:mm a' }}</span>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="w-3/4 text-sm text-muted line-clamp-1 me-auto">
+                                                        <span class="fw-bold text-uppercase" *ngIf="currentUserUID === conversation.lastMessage.uid"> You: </span>
+                                                        <span class="fw-bold" *ngIf="currentUserUID !== conversation.lastMessage.uid"> {{ conversation.lastMessage.uid | user:'displayName' | async }}: </span>
+                                                        {{ conversation.lastMessage.content | truncate:[35, '...'] }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+								</div>
+
+							</div>
+
+							<div class="vstack gap-2" *ngIf="userConversations.length">
+
+								<h6 class="font-semibold text-muted">
+                                    <i class="bi bi-chat-left-fill me-2"></i>Direct Messages
+                                </h6>
+
+                                <div class="list-group list-group-flush" *ngFor="let conversation of userConversations">
+                                    <div class="list-group-item d-flex align-items-center px-0 pl-2" [ngClass]=" conversation.userLastRead < (conversation.lastMessage.index+1) ? 'unread' : '' ">
+                                        <div class="hstack flex-wrap w-full">
+                                            <div class="me-3 text-white">
+
+                                                <div class="position-relative d-inline-block text-current" *ngIf="conversation.receiver === currentUserUID">
+                                                    <div class="avatar rounded-circle">
+                                                        <img referrerpolicy='no-referrer'  src="{{ conversation.uid | user:'photoURL' | async }}">
+                                                    </div>
+                                                    <ng-container *ngIf=" (conversation.uid | status | async) === 'bg-success'; then onlineStatus; else offlineStatus "></ng-container>
+                                                    <ng-template #onlineStatus>
+                                                        <span class="position-absolute bottom-2 end-2 transform translate-x-1/2 translate-y-1/2 border-2 border-solid border-current w-3 h-3 bg-success rounded-circle"></span>
+                                                    </ng-template>
+                                                    <ng-template #offlineStatus>
+                                                        <span class="position-absolute bottom-2 end-2 transform translate-x-1/2 translate-y-1/2 border-2 border-solid border-current w-3 h-3 bg-danger rounded-circle"></span>
+                                                    </ng-template>
+                                                </div>
+
+                                                <div class="position-relative d-inline-block text-current" *ngIf="conversation.receiver !== currentUserUID">
+                                                    <div class="avatar rounded-circle">
+                                                        <img referrerpolicy='no-referrer'  src="{{ conversation.receiver | user:'photoURL' | async }}">
+                                                    </div>
+                                                    <ng-container *ngIf=" (conversation.receiver | status | async) === 'bg-success'; then onlineStatus; else offlineStatus "></ng-container>
+                                                    <ng-template #onlineStatus>
+                                                        <span class="position-absolute bottom-2 end-2 transform translate-x-1/2 translate-y-1/2 border-2 border-solid border-current w-3 h-3 bg-success rounded-circle"></span>
+                                                    </ng-template>
+                                                    <ng-template #offlineStatus>
+                                                        <span class="position-absolute bottom-2 end-2 transform translate-x-1/2 translate-y-1/2 border-2 border-solid border-current w-3 h-3 bg-danger rounded-circle"></span>
+                                                    </ng-template>
+                                                </div>
+
+                                            </div>
+                                            <div class="flex-1">
+
+                                                <div class="d-flex align-items-center mb-1" *ngIf="conversation.receiver === currentUserUID">
+                                                    <a [routerLink] (click)="selectChat(conversation.id)" class="d-block h6 me-auto stretched-link text-decoration-none">{{ conversation.uid | user:'displayName' | async }}</a>
+                                                    <span class="text-muted text-xs ms-2">{{ conversation.lastMessage.createdAt | date:'hh:mm a' }}</span>
+                                                </div>
+
+                                                <div class="d-flex align-items-center mb-1" *ngIf="conversation.receiver !== currentUserUID">
+                                                    <a [routerLink] (click)="selectChat(conversation.id)" class="d-block h6 me-auto stretched-link text-decoration-none">
+                                                        {{ conversation.receiver | user:'displayName' | async }}
+                                                    </a>
+                                                    <span class="text-muted text-xs ms-2">{{ conversation.lastMessage.createdAt | date:'hh:mm a' }}</span>
+                                                </div>
+
+                                                <div class="d-flex align-items-center">
+                                                    <div class="w-3/4 text-sm text-muted line-clamp-1 me-auto">
+                                                        <span class="fw-bold text-uppercase" *ngIf="currentUserUID === conversation.lastMessage.uid"> You: </span>
+                                                        {{ conversation.lastMessage.content | truncate:[35, '...'] }}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+							</div>
+
+						</div>
+
+					</aside>
+
+				</div>
+
+				<div class="min-w-0 flex-xl-fill h-full" *ngIf="!leftBarCollapse">
+
+					<div class="container-fluid px-0 h-full">
+
+						<div class="vstack h-full" *ngIf="selectedChat | async as chat">
+
+							<div class="position-sticky top-0 overlap-10 px-3 px-lg-7 border-bottom">
+
+								<div class="py-1 py-lg-2 bg-surface-primary overlap-10">
+
+                                    <div class="row align-items-center">
+
+                                    	<div class="col-md-6 col-12 d-flex align-items-center">
+
+                                    		<div class="me-3 d-xl-none">
+                                                <a class="text-muted" (click)="leftBarCollapse = !leftBarCollapse">
+                                                    <i class="bi bi-chevron-left"></i>
+                                                </a>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <div class="w-12">
+                                                    <img *ngIf="chat?.teamChat"  class="img-fluid rounded-3" src="https://icotar.com/avatar/{{chat.title}}">
+                                                    <img referrerpolicy='no-referrer' *ngIf="!chat?.teamChat"  class="img-fluid rounded-3" src="{{chat?.receiver | user:'photoURL' | async}}">
+                                                </div>
+                                            </div>
+
+                                            <div class="ms-3 mt-3">
+                                                <h5 *ngIf="chat.teamChat">{{ chat?.title }}</h5>
+                                                <h5 *ngIf="!chat.teamChat">{{ chat.receiver | user:'displayName' | async }}</h5>
+                                                <p class="text-sm text-muted" *ngIf="chat.teamChat">
+                                                    {{ chat.members.length }} members
+                                                </p>
+                                            </div>
+
+                                    	</div>
+
+                                    	<div class="col-md-6 col-12 text-md-end d-none d-md-block" *ngIf="chat.teamChat">
+
+                                            
+                                            <div class="avatar-group">
+                                                <div class="avatar avatar-sm bg-warning rounded-circle text-white" *ngFor="let member of chat.members">
+                                                    <img  src="{{ member | user:'photoURL' | async }}">
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+							</div>
+
+							<div class="flex-fill px-3 py-5 p-lg-7 overflow-y-lg-auto" #scrollMe>
+
+								<div class="vstack gap-8 mb-5">
+
+                                    <ng-container *ngFor="let message of chat.messages; trackBy: trackByCreated; let index = index;">
+
+                                        <div class="d-flex w-md-2/3" *ngIf="message.user.uid !== currentUserUID">
+
+                                            <div class="me-3">
+                                                <a [routerLink] class="avatar avatar-sm rounded-circle">
+                                                    <img referrerpolicy='no-referrer'  src="{{ message.user.uid | user:'photoURL' | async }}">
+                                                </a>
+                                            </div>
+
+                                            <div class="">
+
+                                                <div class="d-flex align-items-center align-self-center">
+                                                    <span class="d-block lh-none text-sm font-semibold text-heading">{{ message.user.uid | user:'displayName' | async }}</span>
+                                                    <span class="d-block lh-none mx-3 text-xs text-muted">{{ message.createdAt | date:'hh:mm a' }}</span>
+                                                </div>
+
+                                                <div class="d-flex mt-2">
+                                                    <div class="px-4 py-3 rounded-3  text-sm bg-gray-100">
+                                                        <p>
+                                                            {{ message.content }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="d-flex w-md-2/3 flex-row-reverse ms-auto" *ngIf="message.user.uid === currentUserUID">
+                                            <div class="ms-3">
+                                                <a [routerLink] class="avatar avatar-sm rounded-circle">
+                                                    <img referrerpolicy='no-referrer'  src="{{ message.user.uid | user:'photoURL' | async }}">
+                                                </a>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <div class="d-flex align-items-center align-self-center flex-row-reverse">
+                                                    <span class="d-block lh-none text-sm font-semibold text-heading text-end">{{ message.user.uid | user:'displayName' | async }}</span>
+                                                    <span class="d-block lh-none mx-3 text-xs text-muted text-end">{{ message.createdAt | date:'hh:mm a' }}</span>
+                                                </div>
+
+                                                <div class="d-flex flex-row-reverse mt-2">
+                                                    <div class="px-4 py-3 rounded-bottom-3 rounded-top-start-3 text-sm bg-primary text-white">
+                                                        <p>
+                                                            {{ message.content }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </ng-container>
+
+                                </div>
+
+							</div>
+
+							<div class="position-sticky bottom-14 flex-auto px-3 py-5 px-lg-7 py-lg-5 overlap-10 bg-surface-secondary border-top">
+                                <div class="d-flex align-items-center bg-surface-primary border px-5 rounded-pill">
+                                    <div class="flex-fill d-flex align-items-center">
+                                        <div class="hstack gap-3 align-items-center w-full">
+                                            <div>
+                                                <a [routerLink] (click)="startVoice()" class="text-lg text-muted" *ngIf="!listening">
+                                                    <i class="bi bi-mic-fill"></i>
+                                                </a>
+                                                <a [routerLink] (click)="stopVoice()" class="text-lg text-muted" *ngIf="listening">
+                                                    <i class="bi bi-mic-fill text-danger"></i>
+                                                </a>
+                                            </div>
+                                            <form class="card-comment-box" role="form">
+                                                <input #newMsgInput class="form-control py-4" [(ngModel)]="newMsg" [ngModelOptions]="{standalone:true}" (keydown.enter)="submit(chat.id); stopVoice()" placeholder="Add a message...">
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <emoji-mart [hidden]="!pickEmojis" [showPreview]="false" [darkMode]="false" title="Pick your emoji…" (emojiClick)="addEmoji($event)" emoji="point_up" [style]="{ position: 'absolute', bottom: '17vh', right: '20vw' }"></emoji-mart>
+                                    <div class="flex-auto text-end">
+                                        <div class="hstack gap-3 align-items-center">
+                                             <a [routerLink] (click)="pickEmojis = !pickEmojis" class="text-muted d-none d-lg-block">
+                                                <i class="bi bi-emoji-smile"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+<ng-template #newModalTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">New Message</h4>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="newMessageForm">
+            <div class="row mb-3">
+                <label class="col-sm-3 col-form-label">Type</label>
+                <div class="col-sm-9">
+                    <select #type class="form-control" formControlName="type" required >
+                        <option value="team">Team Chat</option>
+                        <option value="direct">Direct Chat</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3" *ngIf="type.value === 'team'">
+                <label class="col-sm-3 col-form-label">Chat name</label>
+                <div class="col-sm-9">
+                    <input type="text" formControlName="title" required class="form-control" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-3 col-form-label">{{ type.value === 'team' ? 'Members' : 'Member' }}</label>
+                <div class="col-sm-9">
+                    <ng-select formControlName="members" [addTag]="false" [multiple]="type.value === 'team' ? true : false" [closeOnSelect]="type.value === 'team' ? false : true">
+                        <ng-option *ngFor="let user of allUsers" [value]="user.uid">{{ user.displayName ? user.displayName : user.email }}</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-3 col-form-label">Message</label>
+                <div class="col-sm-9">
+                    <textarea class="form-control" required formControlName="message"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button (click)="modalRef?.hide()" class="btn btn-sm btn-secondary">Cancel</button>
+        <button [disabled]="!newMessageForm.valid" (click)="createChat()" class="btn btn-sm btn-primary">Create</button>
+    </div>
+</ng-template>
+
+
+
+

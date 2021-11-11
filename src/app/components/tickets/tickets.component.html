@@ -1,0 +1,304 @@
+<div class="row gx-0 h-100 overflow-hidden">
+    <div class="col-4 p-4 h-100 shadow bg-light sidebar overflow-hidden">
+        <div class="d-flex justify-content-between align-items-center pb-2 mb-1 border-bottom">
+            <h6 class="h4 font-semibold mb-0"> Tickets </h6>
+            <button (click)="newTicket(newTicketModal)" class="btn btn-sm btn-outline-primary mt-sm-3 mt-md-0">
+                <i class="fal fa-plus"></i>
+            </button>
+        </div>
+        <div dropdown class="">
+            <a [routerLink] class="" dropdownToggle>{{filterCount}} filters selected</a>
+            <ul id="filterDrop" *dropdownMenu class="dropdown-menu shadow">
+                <li class="">
+                    <a [routerLink]="['/tickets', 'filter', 'assigned-to-me']" class="dropdown-item" [ngClass]="filter === 'assigned-to-me' ? 'active' : ''">
+                        My Tickets
+                    </a>
+                </li>
+                <li class="divider dropdown-divider"></li>
+                <li class="">
+                    <a [routerLink]="['/tickets', 'filter', 'unassigned']" class="dropdown-item" [ngClass]="filter === 'unassigned' ? 'active' : ''">
+                        Unassigned Tickets
+                    </a>
+                </li>
+                <li class="divider dropdown-divider"></li>
+                <li class="">
+                    <a [routerLink]="['/tickets', 'filter', 'closed']" class="dropdown-item" [ngClass]="filter === 'closed' ? 'active' : ''">
+                        Closed Tickets
+                    </a>
+                </li>
+                <li class="divider dropdown-divider"></li>
+                <li class="">
+                    <a [routerLink]="['/tickets']" class="dropdown-item">
+                        Clear Filters
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="overflow-scroll messageContainer pb-5">
+            <ng-container *ngFor="let department of departments let isLast = last">
+                <div class="list-group mt-2" [ngClass]="isLast ? 'mb-4' : ''" [hidden]="department.hidden">
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-secondary" *ngIf="tickets[department.key].length > 0">{{ tickets[department.key].length }}</span>
+                                {{ department.value }}
+                            </div>
+                            <a [routerLink] (click)="department.collapsed = !department.collapsed"><i class="fa" [ngClass]=" department.collapsed ? 'fa-chevron-down' : 'fa-chevron-up' "></i></a>
+                        </div>
+                    </div>
+                    <div class="ticket-container" [collapse]="department.collapsed">
+                        <ng-container *ngIf="tickets[department.key].length; else noTickets">
+                            <a [routerLink] class="list-group-item list-group-item-action ps-1" (click)="selectTicket(ticket)" *ngFor="let ticket of tickets[department.key]">
+                                <div class="d-flex justify-content-between align-items-top">
+                                    <div class="icon h6 me-2 mb-0">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-circle fa-stack-2x" [ngClass]="{ 'text-danger' : ticket.priority >= 3, 'text-warning' : ticket.priority === 2, 'text-info' : ticket.priority === 1, 'text-primary' : ticket.priority === 0 }"></i>
+                                            <i class="fas fa-stack-1x fa-inverse" [ngClass]="{ 'fa-thermometer-full' : ticket.priority === 4, 'fa-thermometer-three-quarters' : ticket.priority === 3, 'fa-thermometer-half' : ticket.priority === 2, 'fa-thermometer-quarter' : ticket.priority === 1, 'fa-thermometer-empty' : ticket.priority === 0 }"></i>
+                                        </span>
+                                    </div>
+                                    <div class="info w-100">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="fw-bold pb-0 mb-0 float-left">
+                                                {{ ticket.subject | truncate:[15, '...'] }}
+                                            </h6>
+                                            <p class="float-right text-muted">
+                                                {{ ticket.created.seconds*1000 | amTimeAgo }}
+                                            </p>
+                                        </div>
+                                        <p class="text-muted">{{ ticket.preview }}</p>
+                                        <div class="avatar-group mt-2 pt-2 border-top w-50" *ngIf="ticket.users">
+                                            <div class="avatar avatar-sm bg-warning rounded-circle text-white" tooltip="{{ user | user:'displayName' | async }}" *ngFor="let user of ticket.users">
+                                                <img  src="{{ user | user:'photoURL' | async }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </ng-container>
+                        <ng-template #noTickets>
+                            <div class="fst-normal list-group-item">
+                                <p *ngIf="department.key !== 'closed'"><span class="me-2">🎉</span> <b>Hooray</b>, No tickets for {{ department.value }}!</p>
+                                <p *ngIf="department.key === 'closed'"><span class="me-2">😢</span> <b>No closed tickets</b>, Keep grinding away!</p>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <ng-container *ngIf="ticket; else noTicket">
+        <div class="col-5 p-4 h-100 overflow-scroll pb-5 mb-5 messages">
+
+            <div class="card mb-4 shadow-sm" [ngClass]=" isLast ? 'mb-5' : '' " *ngFor="let message of ticket.messages; let isLast = last">
+                <div class="card-header bg-transparent">
+                    {{ message.from | user:'displayName' | async }}
+                    <p class="float-right text-muted">
+                        <small>{{ message.created.seconds*1000 | amTimeAgo }}</small>
+                    </p>
+                </div>
+                <div class="card-body" [innerHtml]="message.html"></div>
+            </div>
+
+        </div>
+        <div class="col-3 p-4 h-100 shadow bg-grey">
+
+            <div class="details">
+                <span class="text-muted"><small>Ticket {{ ticket.number }}</small></span>
+            </div>
+
+            <div class="spacer py-1"></div>
+
+            <div class="btn-group w-100">
+                <button (click)="newResponse(newMessage)" class="btn btn-sm btn-primary"><i class="fad fa-plus fa-fw"></i>
+                    <span *ngIf="ticket.department !== 'closed'"> Add response</span>
+                    <span *ngIf="ticket.department === 'closed'"> Restore & respond</span>
+                </button>
+                <button *ngIf="ticket.department !== 'closed'" (click)="closeTicket()" class="btn btn-sm btn-danger"><i class="fad fa-times fa-fw"></i> Close ticket</button>
+            </div>
+
+            <div class="spacer py-2"></div>
+
+            <div class="d-flex justify-content-around align-items-center pb-2 mb-2 border-bottom" *ngIf="ticket.department !== 'closed'">
+
+                <div dropdown>
+                    <a [routerLink] dropdownToggle class="badge mr-2 badge-pill" [ngClass]="{ 'bg-danger' : ticket.priority >= 3, 'bg-warning' : ticket.priority === 2, 'bg-info' : ticket.priority === 1, 'bg-primary' : ticket.priority === 0 }" tooltip="Priority" container="body" placement="left">
+                        {{ ticket.priority | toWords:'priority' | titlecase }}
+                    </a>
+                    <ul id="priorityDrop" *dropdownMenu class="dropdown-menu shadow">
+                        <li class="">
+                            <a (click)="setPriority(0)" class="dropdown-item" [routerLink]><i class="fas fa-thermometer-empty text-primary fa-fw"></i> Undertermined</a>
+                        </li>
+                        <li class="divider dropdown-divider"></li>
+                        <li class="">
+                            <a (click)="setPriority(1)" class="dropdown-item" [routerLink]><i class="fas fa-thermometer-quarter text-info fa-fw"></i> Low</a>
+                        </li>
+                        <li class="divider dropdown-divider"></li>
+                        <li class="">
+                            <a (click)="setPriority(2)" class="dropdown-item" [routerLink]><i class="fas fa-thermometer-half text-warning fa-fw"></i> Medium</a>
+                        </li>
+                        <li class="divider dropdown-divider"></li>
+                        <li class="">
+                            <a (click)="setPriority(3)" class="dropdown-item" [routerLink]><i class="fas fa-thermometer-three-quarters text-danger fa-fw"></i> High</a>
+                        </li>
+                        <li class="divider dropdown-divider"></li>
+                        <li class="">
+                            <a (click)="setPriority(4)" class="dropdown-item" [routerLink]> <i class="fas fa-thermometer-full text-danger fa-fw"></i>Urgent</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div dropdown>
+                    <a [routerLink] dropdownToggle class="badge mr-2 badge-pill bg-secondary" tooltip="Department" placement="left" container="body">
+                        {{ ticket.department | titlecase }}
+                    </a>
+                    <ul id="departmentsDrop" *dropdownMenu class="dropdown-menu shadow">
+                        <ng-container *ngFor="let department of departmentOptions; let last = last">
+                            <li class="">
+                                <a (click)="setDepartment(department.key)" class="dropdown-item" [routerLink]>
+                                    {{ department.value | titlecase }}
+                                </a>
+                            </li>
+                            <li *ngIf="!last" class="divider dropdown-divider"></li>
+                        </ng-container>
+                    </ul>
+                </div>
+
+                <span class="badge mr-2 badge-pill bg-info" tooltip="Creation Method" container="body" placement="left">
+                    {{ ticket.method | titlecase }} <!-- Creation Method -->
+                </span>
+
+            </div>
+
+            <ng-container *ngIf="ticket.department !== 'closed'">
+                <p class="text-muted border-bottom mb-2">Response due in</p>
+                <div class="d-flex align-items-center">
+                    <h4 class="mb-0 pb-0" *ngIf="ticket.response_due">
+                        <span *ngIf="daysToDday > 0">{{ daysToDday }}d </span>
+                        <span *ngIf="hoursToDday > 0">{{ hoursToDday }}:</span>
+                        <span *ngIf="minutesToDday > 0">{{ minutesToDday }}:</span>
+                        <span *ngIf="minutesToDday > 0">{{ secondsToDday }}</span>
+                    </h4>
+                    <h5><span *ngIf="!ticket.response_due" class="badge badge-success">Responded, awaiting reply</span></h5>
+                </div>
+                <div class="spacer py-3"></div>
+            </ng-container>
+
+            <p class="text-muted border-bottom mb-2">Created by</p>
+            <div class="d-flex align-items-center">
+                <div href="#" class="avatar bg-warning rounded-circle text-white" tooltip="{{ ticket.customer | user:'displayName' | async }}">
+                    <img  src="{{ ticket.customer | user:'photoURL' | async }}">
+                </div>
+                <div class="ps-3 text-sm">
+                    <span class="h6 d-block font-semibold mb-0">{{ ticket.customer | user:'displayName' | async }}</span>
+                    <span class="small text-muted">{{ ticket.customer | user:'email' | async }}</span><br/>
+                    <span class="small text-muted">{{ ticket.created.seconds*1000 | date:'MMM d, y h:mm a' }}</span>
+                </div>
+            </div>
+
+            <div class="spacer py-3"></div>
+
+            <p class="text-muted border-bottom mb-2">Customer</p>
+            <div class="d-flex align-items-center">
+                <div href="#" class="avatar bg-warning rounded-circle text-white" tooltip="{{ ticket.customer | user:'displayName' | async }}">
+                    <img  src="{{ ticket.customer | user:'photoURL' | async }}">
+                </div>
+                <div class="ps-3 text-sm">
+                    <span class="h6 d-block font-semibold mb-0">{{ ticket.customer | user:'displayName' | async }}</span>
+                    <span class="small text-muted">{{ ticket.customer | user:'email' | async }}</span>
+                </div>
+            </div>
+
+            <div class="spacer py-3"></div>
+
+            <p class="text-muted border-bottom mb-2">Involved users</p>
+            <div class="avatar-group mt-2 pt-2" *ngIf="ticket.users">
+                <div class="avatar avatar-sm bg-warning rounded-circle text-white" tooltip="{{ user | user:'displayName' | async }}" *ngFor="let user of ticket.users">
+                    <img  src="{{ user | user:'photoURL' | async }}">
+                </div>
+            </div>            
+
+        </div>
+    </ng-container>
+    <ng-template #noTicket>
+        <div class="col-8 p-4 h-100 overflow-scroll pb-5 mb-5">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="text-center">
+                    <img src="/assets/img/undraw_rocket.svg" class="mb-2" width="120" />
+                    <h4 class="fw-light">No ticket selected</h4>
+                    <p class="fw-light">Select a ticket to view the details</p>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>
+
+<ng-template #newMessage>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Add response</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="control-label" for="message">Response body</label>
+            <textarea id="message" class="form-control" name="message" [(ngModel)]="responseMessage"></textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button (click)="modalRef?.hide();" class="btn btn-outline-secondary">Cancel</button>
+        <button (click)="sendNewResponse()" class="btn btn-primary" [disabled]="!responseMessage">Send</button>
+    </div>
+</ng-template>
+
+<ng-template #newTicketModal>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">New ticket</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label class="control-label" for="customerName">Customer name</label>
+                    <input type="text" id="customerName" class="form-control" name="customerName" [(ngModel)]="newTicketData.customerName" />
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label class="control-label" for="customerEmail">Customer email</label>
+                    <input type="email" id="customerEmail" class="form-control" name="customerEmail" [(ngModel)]="newTicketData.customerEmail" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label class="control-label" for="department">Department</label>
+                    <ng-select [(ngModel)]="newTicketData.department" [addTag]="false" [multiple]="false" [closeOnSelect]="true">
+                        <ng-option *ngFor="let department of departmentOptions" [value]="department.key">{{ department.key | titlecase }}</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label class="control-label" for="priority">Priority</label>
+                    <ng-select [(ngModel)]="newTicketData.priority" [addTag]="false" [multiple]="false" [closeOnSelect]="true">
+                        <ng-option *ngFor="let priority of priorities" [value]="priority.key">{{ priority.value | titlecase }}</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="subject">Subject</label>
+            <input type="text" id="subject" class="form-control" name="subject" [(ngModel)]="newTicketData.subject" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="message">Response body</label>
+            <textarea id="message" class="form-control" name="message" [(ngModel)]="newTicketData.body"></textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button (click)="modalRef?.hide();" class="btn btn-outline-secondary">Cancel</button>
+        <button (click)="createNewTicket()" class="btn btn-primary">Create</button>
+    </div>
+</ng-template>
+
+
+

@@ -1,0 +1,66 @@
+header {
+  position: relative;
+  height: 100vh;
+  background: linear-gradient(-180deg, #f6bf4e 1%,#f9d281 23%,#fffdf3 71%);
+  overflow: hidden;
+}
+
+.stripes {
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+  transform: skewY(-10deg);
+  top: -130px;
+}
+
+header .stripes .s1 {
+  width: 30%;
+  left: 0;
+  background: linear-gradient(90deg,#ffad5a,rgba(250,175,82,.25));;
+  position: absolute;
+} 
+
+header .stripes .s2 {
+  width: 38%;
+  top: 150px;
+  left: 0;
+  background: linear-gradient(90deg,#ffcd68,rgba(255,199,107,0));;
+  position: absolute;
+} 
+
+
+header .stripes .s3 {
+  width: 38%;
+  top: 300px;
+  right: 0;
+  background: linear-gradient(90deg,hsla(46,98%,78%,0),#ffda84);;
+  position: absolute;
+} 
+
+.stripe {
+  height: 150px;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  position: fixed;
+  left: 0%;
+  top: 10%;
+  width: 100%;
+}
+
+main .card {
+  width: 40%;
+}
+
+
+@media screen and (max-width: 600px) {
+  main {
+    top: 5%;
+  }
+  main .card {
+    width: 85%;
+  }
+}

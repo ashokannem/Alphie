@@ -1,0 +1,88 @@
+
+<div class="card-body">
+
+	<form [formGroup]="ticketForm">
+
+		<div class="text-center border-bottom pb-3">
+			<img *ngIf="branding?.logo" [src]=" branding?.logo " class="mb-2 rounded" />
+			<h5 class="fw-light mb-1">{{ branding?.companyName }}</h5>
+			<p class="fw-light" *ngIf="settings?.publicTicketPage">{{ settings?.headerText }}</p>
+		</div>
+
+		<ng-template #ticketPageClosed>
+			<div class="py-3 text-center">
+				<h5 class="fw-light mb-2">Ticket page closed</h5>
+				<p class="fw-light mb-2">{{ settings?.ticketPageClosedText ? settings.ticketPageClosedText : 'We are currently not accepting online ticket submissions, please try again later.' }}</p>
+				<a [href]="settings?.returnUrl" class="btn text-white" [style.backgroundColor]="branding?.primaryColor"><i class="fad fa-reply"></i> Return to {{branding?.companyName}}</a>
+			</div>
+		</ng-template>
+
+		<ng-container *ngIf="settings?.publicTicketPage; else ticketPageClosed">
+
+			<div class="row my-3 g-2">
+				<div class="col-sm-12 col-lg-6">
+					<div class="form-floating">
+			  			<input formControlName="name" type="text" class="form-control" id="name" placeholder="Jane Doe" required>
+			  			<label for="name">Your name</label>
+					</div>
+				</div>
+				<div class="col-sm-12 col-lg-6">
+					<div class="form-floating">
+			  			<input formControlName="email" type="email" class="form-control" id="email" placeholder="jane@example.com" required>
+			  			<label for="email">Your email</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row my-3 g-2">
+				<div class="col-sm-12 col-lg-6">
+					<ng-select class="custom" formControlName="department" placeholder="Department" [addTag]="false" [multiple]="false" [closeOnSelect]="true">
+	                    <ng-option *ngFor="let department of departments" [value]="department.key">{{ department.value | titlecase }}</ng-option>
+	                </ng-select>
+				</div>
+				<div class="col-sm-12 col-lg-6">
+					<ng-select class="custom" formControlName="priority" placeholder="Priority" [addTag]="false" [multiple]="false" [closeOnSelect]="true">
+	                    <ng-option *ngFor="let priority of priorities" [value]="priority.key">{{ priority.value | titlecase }}</ng-option>
+	                </ng-select>
+				</div>
+			</div>
+
+			<div class="row my-3 g-2">
+				<div class="col">
+					<div class="form-floating">
+			  			<input formControlName="subject" type="text" class="form-control" id="subject" placeholder="Your ticket subject here" required>
+			  			<label for="subject">Subject</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row my-3 g-2">
+				<div class="col">
+					<div class="form-floating">
+			  			<textarea formControlName="body" autosize [minRows]="3" [maxRows]="5" type="text" class="form-control" id="body" placeholder="Your ticket message here" required></textarea>
+			  			<label for="body">Message</label>
+					</div>
+				</div>
+			</div>
+
+		</ng-container>
+
+	</form>
+
+	<a href="#" class="text-decoration-none text-dark" target="_blank">
+		<p class="mb-0 text-right"><small>Powered by <i class="" [ngClass]="appComponent.logoIcon"></i> {{ appComponent.title }}</small></p>
+	</a>
+
+</div>
+
+<div class="card-footer" *ngIf="settings?.publicTicketPage">
+
+	<a [href]="settings?.returnUrl" (click)="cancel()" class="btn btn-outline-secondary">Cancel</a>
+	<button [disabled]="!ticketForm.valid || creating" (click)="createTicket()" class="btn text-white float-end" [style.backgroundColor]="branding?.primaryColor">
+		<span *ngIf="!creating">Submit</span>
+		<span *ngIf="creating"><i class="fa fa-spinner fa-spin"></i> Creating...</span>
+	</button>
+
+</div>
+
+
