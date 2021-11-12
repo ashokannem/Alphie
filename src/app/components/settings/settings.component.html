@@ -1,1 +1,49 @@
-<p>settings works!</p>
+
+<div class="overflow-none">
+    <div class="header pt-4">
+        <div class="px-4 d-flex justify-content-between align-items-center">
+            <h2 class="h4 fw-light text-left">
+                Settings
+            </h2>
+            <div class="btn-group">
+                
+            </div>
+        </div>
+        <nav class="nav nav-tabs nav-fill text-nowrap flex-nowrap overflow-scroll">
+            <li class="nav-item">
+                <a [routerLink]="['/settings', 'general']" class="nav-link" [ngClass]=" active === 'general' ? 'active' : '' ">
+                    General
+                </a>
+            </li>
+            <li class="nav-item">
+                <a [routerLink]="['/settings', 'branding']" class="nav-link" [ngClass]=" active === 'branding' ? 'active' : '' ">
+                    Branding
+                </a>
+            </li>
+            <li class="nav-item">
+                <a [routerLink]="['/settings', 'tickets']" class="nav-link" [ngClass]=" active === 'tickets' ? 'active' : '' ">
+                    Tickets
+                </a>
+            </li>
+            <li class="nav-item">
+                <a [routerLink]="['/settings', 'notifications']" class="nav-link" [ngClass]=" active === 'notifications' ? 'active' : '' ">
+                    Notifications
+                </a>
+            </li>
+            <li class="nav-item">
+                <a [routerLink]="['/settings', 'messages']" class="nav-link" [ngClass]=" active === 'messages' ? 'active' : '' ">
+                    Messages
+                </a>
+            </li>
+            <li class="nav-item">
+                <a [routerLink]="['/settings', 'departments']" class="nav-link" [ngClass]=" active === 'departments' ? 'active' : '' ">
+                    Departments
+                </a>
+            </li>
+        </nav>
+    </div>
+
+    <div class="container my-4 overflow-scroll max-scroll">
+        <router-outlet></router-outlet>
+    </div>
+</div>

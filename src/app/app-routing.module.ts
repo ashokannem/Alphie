@@ -6,7 +6,11 @@ import { AngularFireAuthGuard, redirectUnauthorizedTo, redirectLoggedInTo } from
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { TicketsComponent } from './components/tickets/tickets.component';
+
 import { SettingsComponent } from './components/settings/settings.component';
+import { GeneralSettingsComponent } from './components/settings/general-settings/general-settings.component';
+import { TicketSettingsComponent } from './components/settings/ticket-settings/ticket-settings.component';
+import { NotificationSettingsComponent } from './components/settings/notification-settings/notification-settings.component';
 
 import { PublicComponent } from './components/public/public.component';
 import { NewTicketComponent } from './components/public/new-ticket/new-ticket.component';
@@ -51,7 +55,26 @@ const routes: Routes = [
     canActivate: [AngularFireAuthGuard],
     data: {
       authGuardPipe: redirectUnauthorizedToLogin
-    }
+    },
+    children: [
+      {
+        path: '',
+        redirectTo: 'general',
+        pathMatch: 'full'
+      },
+      {
+        path: 'general',
+        component: GeneralSettingsComponent
+      },
+      {
+        path: 'tickets',
+        component: TicketSettingsComponent
+      },
+      {
+        path: 'notifications',
+        component: NotificationSettingsComponent
+      }
+    ]
   },
   {
     path: 'messages',

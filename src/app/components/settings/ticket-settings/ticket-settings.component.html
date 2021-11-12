@@ -1,0 +1,99 @@
+
+<div class="d-flex justify-content-center align-items-center">
+	<div class="card w-75">
+		<form [formGroup]="settingsForm">
+			<div class="card-body p-0">
+				<div class="list-group list-group-flush">
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col-sm-12 col-md-6">
+								<label class="control-label" for="startNumber">Starting number</label>
+							</div>
+							<div class="col-sm-12 col-md-6">
+								<input type="number" formControlName="startingTicketNumber" class="form-control" name="startNumber" id="startNumber" required />
+								<span class="text-info float-right" *ngIf="hasTickets">Unable to change starting number with existing tickets.</span>
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col">
+								<label class="control-label margin-stay" for="publicTicketPage">Public ticket page</label>
+							</div>
+							<div class="col form-check form-switch text-right">
+	  							<input class="form-check-input" type="checkbox" role="switch" id="publicTicketPage" formControlName="publicTicketPage">
+	  							<label class="form-check-label" for="publicTicketPage">&nbsp;</label>
+							</div>
+						</div>
+					</div>
+					<div [collapse]="!settingsForm.controls['publicTicketPage'].value">
+						<div class="list-group-item list-group-item-secondary border-0">
+							Public Ticket Page Settings
+						</div>
+						<div class="list-group-item">
+							<div class="row gx-0">
+								<div class="col-sm-12 col-md-6 d-flex justify-content-between align-items-center">
+									<label class="control-label" for="none">Public Url</label>
+									<span class="d-block d-md-none text-primary float-end" tooltip="Copy URL"><a [routerLink] class="text-decoration-none" (click)="copyToClipboard(ticketPageUrl)"><i class="fas fa-copy"></i></a></span>
+								</div>
+								<div class="col-sm-12 col-md-6 d-flex justify-content-between align-items-center">
+									<label class="control-label" for="none">
+										{{ ticketPageUrl }}
+										<input type="text" #textToCopy class="d-none" disabled [ngModel]="ticketPageUrl" [ngModelOptions]="{standalone: true}" />
+									</label>
+									<span class="d-none d-md-block text-primary float-end" tooltip="Copy URL"><a [routerLink] class="text-decoration-none" (click)="copyToClipboard(ticketPageUrl)"><i class="fas fa-copy"></i></a></span>
+								</div>
+							</div>
+						</div>
+						<div class="list-group-item">
+							<div class="row gx-0">
+								<div class="col-sm-12 col-md-6">
+									<label class="control-label" for="headerText">Header Text</label>
+								</div>
+								<div class="col-sm-12 col-md-6">
+									<input #headerText type="text" class="form-control" formControlName="headerText" name="headerText" id="headerText" />
+									<span class="float-right" [ngClass]="headerText.value.length < 24 || headerText.value.length > 84 ? 'text-danger' : 'text-muted' ">
+										{{ headerText.value.length }} /
+										<span *ngIf="headerText.value.length < 24">24</span>
+										<span *ngIf="headerText.value.length >= 24">84</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="list-group-item">
+							<div class="row gx-0">
+								<div class="col-sm-12 col-md-6">
+									<label class="control-label" for="ticketPageClosedText">Closed Text</label>
+								</div>
+								<div class="col-sm-12 col-md-6">
+									<input #closedText type="text" class="form-control" formControlName="ticketPageClosedText" name="ticketPageClosedText" id="ticketPageClosedText" />
+									<span class="float-right" [ngClass]="closedText.value.length < 24 || closedText.value.length > 84 ? 'text-danger' : 'text-muted' ">
+										{{ closedText.value.length }} /
+										<span *ngIf="closedText.value.length < 24">24</span>
+										<span *ngIf="closedText.value.length >= 24">84</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="list-group-item">
+							<div class="row gx-0">
+								<div class="col-sm-12 col-md-6">
+									<label class="control-label" for="returnUrl">Cancel Return Url</label>
+								</div>
+								<div class="col-sm-12 col-md-6">
+									<input type="url" class="form-control" formControlName="returnUrl" name="returnUrl" id="returnUrl" required/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div class="card-footer">
+			<button class="btn btn-sm btn-primary float-end" (click)="saveChanges()" [disabled]="!settingsForm.valid || !settingsForm.touched || saving">
+				<span *ngIf="!saving">Save</span>
+				<span *ngIf="saving"><i class="fas fa-circle-notch fa-spin"></i> Saving...</span>
+			</button>
+		</div>
+	</div>
+</div>

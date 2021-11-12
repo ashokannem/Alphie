@@ -27,6 +27,10 @@ export class TicketsService {
     }));
   }
 
+  saveSettings(settings:any) {
+    return this.afs.collection<any>('settings').doc('tickets').set(settings, { merge: true });
+  }
+
   getDepartments() {
     return this.afs.collection<any>('settings').doc('tickets').collection('departments').valueChanges().pipe(map(data => {
       return data;
