@@ -46,6 +46,7 @@ import { NewTicketComponent } from './components/public/new-ticket/new-ticket.co
 import { GeneralSettingsComponent } from './components/settings/general-settings/general-settings.component';
 import { TicketSettingsComponent } from './components/settings/ticket-settings/ticket-settings.component';
 import { NotificationSettingsComponent } from './components/settings/notification-settings/notification-settings.component';
+import { BrandingSettingsComponent } from './components/settings/branding-settings/branding-settings.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { NotificationSettingsComponent } from './components/settings/notificatio
     GeneralSettingsComponent,
     TicketSettingsComponent,
     NotificationSettingsComponent,
+    BrandingSettingsComponent,
   ],
   imports: [
     BrowserModule,

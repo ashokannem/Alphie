@@ -1,0 +1,57 @@
+
+<div class="d-flex justify-content-center align-items-center">
+	<div class="card w-75">
+		<form [formGroup]="brandingForm">
+			<div class="card-body p-0">
+				<div class="list-group list-group-flush">
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col-sm-12 col-md-6">
+								<label class="control-label" for="companyName">Company Name</label>
+							</div>
+							<div class="col-sm-12 col-md-6">
+								<input type="text" formControlName="companyName" class="form-control" name="companyName" id="companyName" required minlength="2" />
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col">
+								<label class="control-label margin-stay" for="primaryColor">Primary Color</label>
+							</div>
+							<div class="col">
+								<input type="color" formControlName="primaryColor" class="form-control form-control-color float-right" name="primaryColor" id="primaryColor" required />
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col">
+								<label class="control-label margin-stay" for="secondaryColor">Secondary Color</label>
+							</div>
+							<div class="col">
+								<input type="color" formControlName="secondaryColor" class="form-control form-control-color float-right" name="secondaryColor" id="secondaryColor" required />
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col-sm-12 col-md-6">
+								<label class="control-label" for="logo">Logo</label>
+							</div>
+							<div class="col-sm-12 col-md-6">
+								<input type="file" (change)="onFileSelect($event)" [(ngModel)]="logoFile" [ngModelOptions]="{standalone:true}" accept="image/*" class="form-control" name="logo" id="logo" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div class="card-footer">
+			<button class="btn btn-sm btn-primary float-end" (click)="saveChanges()" [disabled]="!brandingForm.valid || !brandingForm.touched || saving">
+				<span *ngIf="!saving">Save</span>
+				<span *ngIf="saving"><i class="fas fa-circle-notch fa-spin"></i> Saving...</span>
+			</button>
+		</div>
+	</div>
+</div>

@@ -21,6 +21,10 @@ export class TicketsService {
     }));
   }
 
+  saveBranding(settings:any) {
+    return this.afs.collection<any>('settings').doc('branding').set(settings, { merge: true });
+  }
+
   getSettings() {
     return this.afs.collection<any>('settings').doc('tickets').valueChanges().pipe(map(data => {
       return data;
