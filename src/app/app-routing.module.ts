@@ -8,7 +8,6 @@ import { MessagesComponent } from './components/messages/messages.component';
 import { TicketsComponent } from './components/tickets/tickets.component';
 
 import { SettingsComponent } from './components/settings/settings.component';
-import { GeneralSettingsComponent } from './components/settings/general-settings/general-settings.component';
 import { BrandingSettingsComponent } from './components/settings/branding-settings/branding-settings.component';
 import { TicketSettingsComponent } from './components/settings/ticket-settings/ticket-settings.component';
 import { NotificationSettingsComponent } from './components/settings/notification-settings/notification-settings.component';
@@ -60,12 +59,8 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'general',
+        redirectTo: 'branding',
         pathMatch: 'full'
-      },
-      {
-        path: 'general',
-        component: GeneralSettingsComponent
       },
       {
         path: 'branding',

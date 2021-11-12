@@ -43,7 +43,6 @@ import { ToWordsPipe } from './shared/pipes/to-words.pipe';
 import { SettingsComponent } from './components/settings/settings.component';
 import { PublicComponent } from './components/public/public.component';
 import { NewTicketComponent } from './components/public/new-ticket/new-ticket.component';
-import { GeneralSettingsComponent } from './components/settings/general-settings/general-settings.component';
 import { TicketSettingsComponent } from './components/settings/ticket-settings/ticket-settings.component';
 import { NotificationSettingsComponent } from './components/settings/notification-settings/notification-settings.component';
 import { BrandingSettingsComponent } from './components/settings/branding-settings/branding-settings.component';
@@ -62,7 +61,6 @@ import { BrandingSettingsComponent } from './components/settings/branding-settin
     SettingsComponent,
     PublicComponent,
     NewTicketComponent,
-    GeneralSettingsComponent,
     TicketSettingsComponent,
     NotificationSettingsComponent,
     BrandingSettingsComponent,
