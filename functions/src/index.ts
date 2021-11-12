@@ -161,7 +161,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
             'text' : 'A ticket had users added.',
             'html' : `Ticket #${document.number} had users added, check out your admin panel to view it.`,
           }
-          return sendEmail(message, 'newTicketUserAdded');
+          return sendEmail(message, 'ticketUserAdded');
         } else if(document.users.length < oldDocument.users.length) {
           // Users have been removed.
           let message = {
@@ -170,7 +170,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
             'text' : 'A ticket had users removed.',
             'html' : `Ticket #${document.number} had users removed, check out your admin panel to view it.`,
           }
-          return sendEmail(message, 'newTicketUserRemoved');
+          return sendEmail(message, 'ticketUserRemoved');
         } else {
           return 'unhandled-action';
         }  
