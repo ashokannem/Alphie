@@ -124,6 +124,23 @@ async function sendEmail(data:any, action:string, ignoringUser?:string) {
   });
 }
 
+export const sendUserInvites = functions.firestore.document('invites/{inviteID}').onCreate((snap:any, context:any) => {
+  return new Promise( async(resolve, reject) => {
+    const newValue = snap.data();
+    if(newValue.email) {
+      let message = {
+        'to' : newValue.email,
+        'from' : 'Alphie Support <help@alphie.et-kc.com>',
+        'subject' : `You've been invited to join your team!`,
+        'text' : 'You have been invited to join your team on Alphie!',
+        'html' : `<b>Hey ${newValue.displayName},</b><br/><br/>You have been invited to join your team on Alphie, the all in one ticketing platform!<br/><br/><b>Ready to get started?</b> We thought so! Simply <a href="https://localhost:4200/userInvite/${snap.id}">click here</a> to join your team!<br/><br/>Cheers!`
+      }
+      await sgMail.send(message);
+      resolve('Email invite was sent');
+    }
+  });
+});
+
 export const manageTicketUserNotifications = functions.firestore.document('tickets/{ticketID}').onWrite((change:any, context:any) => {
   // If the document does not exist, it has been deleted.
   const document = change.after.exists ? change.after.data() : null;
