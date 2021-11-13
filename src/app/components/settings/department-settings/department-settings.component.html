@@ -1,0 +1,25 @@
+
+<div class="d-flex justify-content-center align-items-center">
+	<div class="list-group list-group-flush border-bottom w-75" *ngIf="departments">
+		<div class="list-group-item d-flex justify-content-between align-items-center p-0">
+			<input #new [(ngModel)]="newDepartmentName" type="text" class="form-control border-bottom-0" (keydown.enter)="addDepartment(new.value)" placeholder="Enter new department name" />
+		</div>
+		<ngx-sortable [items]="departments" [name]="'Departments'" [listStyle]="listStyle" [showHeader]="false" (listSorted)="listOrderChanged($event)">
+			<ng-template let-item>
+				<div class="list-group-item d-flex justify-content-between align-items-center">
+					<div class="name w-100 text-left">
+						<i class="fa fa-bars fa-fw mr-3"></i>
+						{{ item.value }}
+						<small *ngIf="item.key === 'undetermined'" class="badge bg-info float-end">Recommended first</small>
+						<small *ngIf="item.key === 'closed'" class="badge bg-info float-end">Recommended last</small>
+					</div>
+					<div class="actions" *ngIf="item.key !== 'undetermined' && item.key !== 'closed'">
+						<a (click)="deleteDepartment(item.key)" class="btn btn-outline-danger border-0 btn-sm">
+							<i class="fa fa-trash"></i>
+						</a>
+					</div>
+				</div>
+			</ng-template>
+		</ngx-sortable>
+	</div>
+</div>

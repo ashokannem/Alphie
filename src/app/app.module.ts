@@ -12,6 +12,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { MomentModule } from 'ngx-moment';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { NgxSortableModule } from 'ngx-sortable'
 
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
@@ -46,6 +47,7 @@ import { NewTicketComponent } from './components/public/new-ticket/new-ticket.co
 import { TicketSettingsComponent } from './components/settings/ticket-settings/ticket-settings.component';
 import { NotificationSettingsComponent } from './components/settings/notification-settings/notification-settings.component';
 import { BrandingSettingsComponent } from './components/settings/branding-settings/branding-settings.component';
+import { DepartmentSettingsComponent } from './components/settings/department-settings/department-settings.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +66,7 @@ import { BrandingSettingsComponent } from './components/settings/branding-settin
     TicketSettingsComponent,
     NotificationSettingsComponent,
     BrandingSettingsComponent,
+    DepartmentSettingsComponent,
   ],
   imports: [
     BrowserModule,
@@ -89,8 +92,8 @@ import { BrandingSettingsComponent } from './components/settings/branding-settin
     AutosizeModule,
     MomentModule,
     TypeaheadModule.forRoot(),
-    PickerModule
-
+    PickerModule,
+    NgxSortableModule
   ],
   providers: [
     {

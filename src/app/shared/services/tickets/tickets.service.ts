@@ -41,6 +41,18 @@ export class TicketsService {
     }));
   }
 
+  saveDepartments(departments:any) {
+    return this.afs.collection<any>('settings').doc('tickets').set({
+      'departments' : departments
+    }, { merge: true });
+  }
+
+  addDepartment(department:any) {
+    return this.afs.collection<any>('settings').doc('tickets').set({
+      'departments' : firebase.firestore.FieldValue.arrayUnion(department)
+    }, { merge: true });
+  }
+
   getNextNumber():Promise<number> {
     return new Promise((resolve, reject) => {
       this.afs.collection<any>('tickets').ref.get().then((collectionSnapshot) => {
