@@ -51,8 +51,8 @@ export class TicketsComponent implements OnInit, OnDestroy {
   constructor( private ticketService: TicketsService, private authService: AuthService, private modalService: BsModalService, private route: ActivatedRoute ) { }
 
   ngOnInit(): void {
-    this.ticketService.getDepartments().subscribe((departments:any) => {
-      this.departments = departments.sort((a:any, b:any) => a.order - b.order );
+    this.ticketService.getSettings().subscribe((settings:any) => {
+      this.departments = settings.departments.sort((a:any, b:any) => a.order - b.order );
       this.route.params.subscribe((params:any) => {
         if(params.filter) {
           this.filterCount = 1;
@@ -67,7 +67,7 @@ export class TicketsComponent implements OnInit, OnDestroy {
           }
         }
       })
-      departments.forEach((department:any, index:number) => {
+      settings.departments.forEach((department:any, index:number) => {
         if(!this.tickets[department.key]) {
           this.tickets[department.key] = [];
         }
@@ -79,7 +79,6 @@ export class TicketsComponent implements OnInit, OnDestroy {
           }
         }
       })
-      this.departmentOptions.sort((a:any, b:any) => a.order - b.order );
     });
     this.ticketService.getAll().subscribe( async(tickets:any) => {
       const { uid } = await this.authService.GetUser();
