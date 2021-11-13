@@ -54,6 +54,17 @@ export class AuthService {
     });
   }
 
+  SignUp(email:string, password:string) {
+    return this.afAuth.createUserWithEmailAndPassword(email, password).then((result:any) => {
+      this.ngZone.run(() => {
+        this.router.navigate(['dashboard']);
+      });
+      this.setUserData(result.user);
+    }).catch((error) => {
+      this.toastr.error(error.message, 'Whoops!');
+    });
+  }
+
   SignInWithGoogle() {
     return new Promise((resolve, reject) => {
 

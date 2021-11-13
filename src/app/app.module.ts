@@ -49,6 +49,7 @@ import { NotificationSettingsComponent } from './components/settings/notificatio
 import { BrandingSettingsComponent } from './components/settings/branding-settings/branding-settings.component';
 import { DepartmentSettingsComponent } from './components/settings/department-settings/department-settings.component';
 import { UserSettingsComponent } from './components/settings/user-settings/user-settings.component';
+import { InviteComponent } from './components/auth/invite/invite.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { UserSettingsComponent } from './components/settings/user-settings/user-
     BrandingSettingsComponent,
     DepartmentSettingsComponent,
     UserSettingsComponent,
+    InviteComponent,
   ],
   imports: [
     BrowserModule,

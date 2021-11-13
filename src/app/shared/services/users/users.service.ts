@@ -32,6 +32,20 @@ export class UsersService {
     });
   }
 
+  RetrieveInvite(inviteCode:string) {
+    return new Promise((resolve, reject) => {
+      this.afs.collection('invites').doc(inviteCode).ref.get().then((invite) => {
+        if(invite.exists) {
+          resolve(invite.data());
+        } else {
+          reject('No such invite!');
+        }
+      }).catch((error:any) => {
+        reject(error);
+      });
+    });
+  }
+
   UpdateUser(user:string, data:any) {
     return new Promise((resolve, reject) => {
       this.afs.collection('users').doc(user).set(data, { merge: true }).then((user:any) => {

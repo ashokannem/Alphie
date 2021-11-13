@@ -18,6 +18,7 @@ import { PublicComponent } from './components/public/public.component';
 import { NewTicketComponent } from './components/public/new-ticket/new-ticket.component';
 
 import { LoginComponent } from './components/auth/login/login.component';
+import { InviteComponent } from './components/auth/invite/invite.component';
 
 const redirectLoggedInToDashboard = () => redirectLoggedInTo(['/dashboard']);
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/login']);
@@ -46,6 +47,14 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: {
+      authGuardPipe: redirectLoggedInToDashboard
+    }
+  },
+  {
+    path: 'userInvite/:inviteID',
+    component: InviteComponent,
     canActivate: [AngularFireAuthGuard],
     data: {
       authGuardPipe: redirectLoggedInToDashboard
