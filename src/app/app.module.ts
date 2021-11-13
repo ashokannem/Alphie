@@ -48,6 +48,7 @@ import { TicketSettingsComponent } from './components/settings/ticket-settings/t
 import { NotificationSettingsComponent } from './components/settings/notification-settings/notification-settings.component';
 import { BrandingSettingsComponent } from './components/settings/branding-settings/branding-settings.component';
 import { DepartmentSettingsComponent } from './components/settings/department-settings/department-settings.component';
+import { UserSettingsComponent } from './components/settings/user-settings/user-settings.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { DepartmentSettingsComponent } from './components/settings/department-se
     NotificationSettingsComponent,
     BrandingSettingsComponent,
     DepartmentSettingsComponent,
+    UserSettingsComponent,
   ],
   imports: [
     BrowserModule,

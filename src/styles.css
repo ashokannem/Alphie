@@ -18,6 +18,15 @@ p {
 	padding: 0px;
 }
 
+textarea:focus, input:focus, input:focus-within, .input-group:focus-within {
+    outline: none;
+    box-shadow: none;
+}
+*:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 .truncate {
   width: 250px;
   white-space: nowrap;

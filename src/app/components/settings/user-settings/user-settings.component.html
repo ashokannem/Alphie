@@ -1,0 +1,68 @@
+
+<div class="d-flex justify-content-center align-items-center">
+	<div class="card w-75">
+		<form [formGroup]="newUserForm">
+			<div class="card-header">
+				Invite user
+			</div>
+			<div class="card-body p-0">
+				<div class="row g-0 align-items-center">
+					<div class="col-12 col-md-5">
+					    <label class="visually-hidden" for="displayName">Display name</label>
+					    <div class="input-group rounded-0">
+					      <div class="input-group-text rounded-0">@</div>
+					      <input type="text" class="form-control rounded-0" id="displayName" formControlName="displayName" placeholder="Display name" required minlength="2">
+					    </div>
+  					</div>
+  					<div class="col-12 col-md-5">
+					    <label class="visually-hidden" for="email">Email</label>
+					    <div class="input-group rounded-0">
+					      <input type="text" class="form-control rounded-0" id="email" formControlName="email" placeholder="Email" required>
+					      <div class="input-group-text rounded-0">@et-kc.com</div>
+					    </div>
+  					</div>
+  					<div class="col-12 col-md-2">
+    					<button [disabled]="!newUserForm.valid || saving" (click)="addUser()" type="submit" class="btn btn-primary rounded-0 w-100">
+    						<span *ngIf="!saving">Invite</span>
+    						<span *ngIf="saving"><i class="fa fa-circle-notch fa-spin"></i> Inviting</span>
+    					</button>
+  					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="d-flex justify-content-center align-items-center mt-3">
+	<div class="card w-75">	
+		<div class="card-header">
+			All users
+		</div>
+		<div class="table-responsive" *ngIf="users.length; else noUsers">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="2%" class="text-center">&nbsp;</th>
+						<th>Display name</th>
+						<th>Email</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let user of users">
+						<td width="2%" class="text-center">
+							<!-- Status Indicator -->
+						</td>
+						<td>{{ user.displayName }}</td>
+						<td>{{ user.email }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<ng-template #noUsers>
+			<div class="text-center my-4">
+				<img src="/assets/img/undraw_interaction_design_odgc.svg" width="160" class="img-responsive mb-3" />
+				<h3 class="fw-light">No users</h3>
+				<p class="fw-light">You have not created any users, why not add one above now?</p>
+			</div>
+		</ng-template>	
+	</div>
+</div>

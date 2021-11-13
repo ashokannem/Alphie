@@ -16,6 +16,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a [routerLink]="['/settings', 'users']" class="nav-link" [ngClass]=" active === 'users' ? 'active' : '' ">
+                    Users
+                </a>
+            </li>
+            <li class="nav-item">
                 <a [routerLink]="['/settings', 'tickets']" class="nav-link" [ngClass]=" active === 'tickets' ? 'active' : '' ">
                     Tickets
                 </a>

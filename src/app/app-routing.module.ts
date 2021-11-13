@@ -12,6 +12,7 @@ import { BrandingSettingsComponent } from './components/settings/branding-settin
 import { TicketSettingsComponent } from './components/settings/ticket-settings/ticket-settings.component';
 import { NotificationSettingsComponent } from './components/settings/notification-settings/notification-settings.component';
 import { DepartmentSettingsComponent } from './components/settings/department-settings/department-settings.component';
+import { UserSettingsComponent } from './components/settings/user-settings/user-settings.component';
 
 import { PublicComponent } from './components/public/public.component';
 import { NewTicketComponent } from './components/public/new-ticket/new-ticket.component';
@@ -66,6 +67,10 @@ const routes: Routes = [
       {
         path: 'branding',
         component: BrandingSettingsComponent
+      },
+      {
+        path: 'users',
+        component: UserSettingsComponent
       },
       {
         path: 'tickets',
