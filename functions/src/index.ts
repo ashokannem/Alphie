@@ -10,6 +10,40 @@ admin.initializeApp();
 
 sgMail.setApiKey(functions.config().sendgrid.key);
 
+export const newUserSetup = functions.auth.user().onCreate( async(user) => {
+
+  return new Promise((resolve, reject) => {
+
+    if(user.email) {
+      const uid = user.uid;
+      const email = user.email;
+      const displayName = email.split('@')[0];
+      const userRef = admin.firestore().collection('users');
+      userRef.doc(uid).set({
+        'status' : 'offline',
+        'unreadMessageCount' : 0,
+        'userActiveChat' : null,
+        'displayName' : displayName,
+        'email' : email,
+        'emailVerified' : true,
+        'uid' : uid
+      }, { merge: true });
+      userRef.doc(uid).collection('preferences').doc('notifications').set({
+        'email' : {
+          'newTicketCreated' : true,
+          'newTicketMessage' : true,
+          'ticketDepartmentChanged' : true,
+          'ticketPriorityChanged' : true,
+          'ticketUserAdded' : true,
+          'ticketUserRemoved' : true
+        }
+      }, { merge: true });
+    }
+
+  })
+
+});
+
 export const incomingEmail = functions.https.onRequest( async(req, res) => {
 
   if(req.method !== 'POST') {
