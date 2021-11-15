@@ -3,6 +3,8 @@ import { DOCUMENT } from  '@angular/common';
 import { Event,NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { AuthService } from './shared/services/auth/auth.service';
 import { MessagesService } from './shared/services/messages/messages.service';
+import { SetupService } from './shared/services/setup/setup.service';
+import { ToastrService } from 'ngx-toastr';
 import { environment } from '../environments/environment';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { BsDropdownConfig } from 'ngx-bootstrap/dropdown';
@@ -38,7 +40,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public unreadMessageCount: number = 0;
   public currentUserUID!: string;
 
-  constructor( @Inject(DOCUMENT) private document: Document, private renderer: Renderer2, private router: Router, public authService:AuthService, public messageService: MessagesService, private modalService: BsModalService ) {
+  constructor( @Inject(DOCUMENT) private document: Document, private toast: ToastrService, private renderer: Renderer2, private router: Router, private setupService: SetupService, public authService:AuthService, public messageService: MessagesService, private modalService: BsModalService ) {
     this.router.events.subscribe((event: Event) => {
       switch(true) {
         case event instanceof NavigationStart: {
@@ -71,6 +73,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+
+    this.setupService.CheckSetup().then(() => {
+
+    }).catch((error:any) => {
+      this.toast.error(error.message, 'Whoops');
+    })
 
     if(window.innerWidth <= 599) {
       this.isSidebarCollapsed = true;
