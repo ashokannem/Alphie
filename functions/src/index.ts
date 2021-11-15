@@ -130,10 +130,10 @@ export const sendUserInvites = functions.firestore.document('invites/{inviteID}'
     if(newValue.email) {
       let message = {
         'to' : newValue.email,
-        'from' : 'Alphie Support <help@alphie.et-kc.com>',
+        'from' : `${functions.config().app_config.support_name} <${functions.config().app_config.support_email}>`,
         'subject' : `You've been invited to join your team!`,
         'text' : 'You have been invited to join your team on Alphie!',
-        'html' : `<b>Hey ${newValue.displayName},</b><br/><br/>You have been invited to join your team on Alphie, the all in one ticketing platform!<br/><br/><b>Ready to get started?</b> We thought so! Simply <a href="https://localhost:4200/userInvite/${snap.id}">click here</a> to join your team!<br/><br/>Cheers!`
+        'html' : `<b>Hey ${newValue.displayName},</b><br/><br/>You have been invited to join your team on ${functions.config().app_config.title}, their all in one ticketing platform!<br/><br/><b>Ready to get started?</b> We thought so! Simply <a href="https://${functions.config().app_config.interface_domain}/userInvite/${snap.id}">click here</a> to join your team!<br/><br/>Cheers!`
       }
       await sgMail.send(message);
       resolve('Email invite was sent');
@@ -153,7 +153,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
       if(document.priority !== oldDocument.priority) {
         // The priority of the ticket was changed.
         let message = {
-          'from' : 'Alphie Support <help@alphie.et-kc.com>',
+          'from' : `${functions.config().app_config.support_name} <${functions.config().app_config.support_email}>`,
           'subject' : `Ticket #${document.number} priority was changed`,
           'text' : 'A ticket had the priority updated.',
           'html' : `Ticket #${document.number} had the priority changed from ${oldDocument.priority} to ${document.priority}`,
@@ -162,7 +162,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
       } else if(document.department !== oldDocument.department) {
         // The department of the ticket was changed.
         let message = {
-          'from' : 'Alphie Support <help@alphie.et-kc.com>',
+          'from' : `${functions.config().app_config.support_name} <${functions.config().app_config.support_email}>`,
           'subject' : `Ticket #${document.number} department was changed`,
           'text' : 'A ticket had the department updated.',
           'html' : `Ticket #${document.number} had the department changed from ${oldDocument.department} to ${document.department}`,
@@ -173,7 +173,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
         if(document.users.length > oldDocument.users.length) {
           // Users have been added.
           let message = {
-            'from' : 'Alphie Support <help@alphie.et-kc.com>',
+            'from' : `${functions.config().app_config.support_name} <${functions.config().app_config.support_email}>`,
             'subject' : `Ticket #${document.number} had users added`,
             'text' : 'A ticket had users added.',
             'html' : `Ticket #${document.number} had users added, check out your admin panel to view it.`,
@@ -182,7 +182,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
         } else if(document.users.length < oldDocument.users.length) {
           // Users have been removed.
           let message = {
-            'from' : 'Alphie Support <help@alphie.et-kc.com>',
+            'from' : `${functions.config().app_config.support_name} <${functions.config().app_config.support_email}>`,
             'subject' : `Ticket #${document.number} had users removed`,
             'text' : 'A ticket had users removed.',
             'html' : `Ticket #${document.number} had users removed, check out your admin panel to view it.`,
@@ -194,7 +194,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
       } else if(document.messages !== oldDocument.messages) {
         // A message was added to the ticket
         let message = {
-          'from' : 'Alphie Support <help@alphie.et-kc.com>',
+          'from' : `${functions.config().app_config.support_name} <${functions.config().app_config.support_email}>`,
           'subject' : `Ticket #${document.number} recieved a new message`,
           'text' : 'A ticket received a new message.',
           'html' : `Ticket #${document.number} had a new message received, check out your admin panel to view it.`,
@@ -207,7 +207,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
       // The document was just created.
       let ticketCreatedBy = document.created_by;
       let message = {
-        'from' : 'Alphie Support <help@alphie.et-kc.com>',
+        'from' : `${functions.config().app_config.support_name} <${functions.config().app_config.support_email}>`,
         'subject' : `New ticket #${document.number} was created`,
         'text' : 'A new ticket was created for your company, Check it out!',
         'html' : `A new ticket with the subject of, ${document.subject} was just created. Visit your admin panel to begin working on it.`,
