@@ -19,7 +19,7 @@
 											<div class="input-group">
 												<input type="text" class="form-control form-control-user" formControlName="username" name="username" id="username" placeholder="Enter your username" />
 												<span class="input-group-text">
-													@et-kc.com
+													@{{ config?.emailDomain}}
 												</span>
 											</div>
 										</div>
@@ -27,10 +27,12 @@
 											<input type="password" class="form-control form-control-user" formControlName="password" name="password" id="password" placeholder="Enter your password" />
 										</div>
 										<button [disabled]="!loginForm.valid" (click)="attemptLogin()" class="btn btn-primary btn-user btn-block">Login</button>
-										<hr>
-										<button (click)="attemptLoginWithGoogle()" class="btn btn-google btn-user btn-block">
-											<i class="fab fa-google fa-fw"></i> Login with Google
-										</button>
+										<ng-container *ngIf="config?.allowGoogleLogin">
+											<hr>
+											<button (click)="attemptLoginWithGoogle()" class="btn btn-google btn-user btn-block">
+												<i class="fab fa-google fa-fw"></i> Login with Google
+											</button>
+										</ng-container>
 									</form>
 								</div>
 							</div>

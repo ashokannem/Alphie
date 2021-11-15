@@ -3,7 +3,7 @@ import { DOCUMENT } from  '@angular/common';
 import { Event,NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { AuthService } from './shared/services/auth/auth.service';
 import { MessagesService } from './shared/services/messages/messages.service';
-
+import { environment } from '../environments/environment';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { BsDropdownConfig } from 'ngx-bootstrap/dropdown';
 
@@ -31,8 +31,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   public isSidebarCollapsed = false;
   public isSidebarToggled = false;
   public loading: boolean = false;
-  public title: string = 'Alphie';
-  public logoIcon: string = 'fas fa-laugh-wink';
+  public title: string = environment.appConfig.title;
+  public logoIcon: string = environment.appConfig.logoIcon;
   public page!: string;
   public userDirectMessages: any = [];
   public unreadMessageCount: number = 0;

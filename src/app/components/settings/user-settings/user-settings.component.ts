@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core'
 import { DOCUMENT } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../../environments/environment';
 import { finalize } from 'rxjs/operators';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -14,6 +15,7 @@ import { UsersService } from '../../../shared/services/users/users.service';
 })
 export class UserSettingsComponent implements OnInit {
 
+  public config: any;
   public users: any = [];
 
   public saving: boolean = false;
@@ -25,6 +27,7 @@ export class UserSettingsComponent implements OnInit {
   constructor( private userService: UsersService, private authService: AuthService, private toast: ToastrService ) { }
 
   ngOnInit(): void {
+    this.config = environment.appConfig;
     this.userService.GetAll().then( async(data:any) => {
       let { uid } = await this.authService.GetUser();
       let users:any = [];
@@ -43,13 +46,13 @@ export class UserSettingsComponent implements OnInit {
     if(this.newUserForm.valid) {
       this.userService.CreateUser({
         'displayName' : this.newUserForm.controls['displayName'].value,
-        'email' : `${this.newUserForm.controls['email'].value}@et-kc.com`,
+        'email' : `${this.newUserForm.controls['email'].value}@${this.config.emailDomain}`,
         'emailVerified' : false,
         'photoURL' : null,
         'unreadMessageCount' : 0,
         'userActiveChat' : null
       }).then((user:any) => {
-        this.toast.success(`${this.newUserForm.controls['displayName'].value} was invited. Invite sent to ${this.newUserForm.controls['email'].value}@et-kc.com.`, 'Success');
+        this.toast.success(`${this.newUserForm.controls['displayName'].value} was invited. Invite sent to ${this.newUserForm.controls['email'].value}@${this.config.emailDomain}.`, 'Success');
         this.saving = false;
       }).catch((error:any) => {
         this.toast.error(error.message, 'Error');

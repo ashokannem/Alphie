@@ -5,7 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
 import { Observable, combineLatest, of } from 'rxjs';
-
+import { environment } from '../../../../environments/environment';
 import firebase from 'firebase/compat/app';
 
 @Injectable({
@@ -114,7 +114,7 @@ export class TicketsService {
             this.afs.collection<any>('tickets').doc(ticket.id).set({
               'messages' : firebase.firestore.FieldValue.arrayUnion({
                 'created' : new Date(now),
-                'from' : 'Alphie Support <help@alphie.et-kc.com>',
+                'from' : `${environment.appConfig.supportName} <${environment.appConfig.supportEmail}>`,
                 'html' : data.body,
                 'response_due' : responseDueAt
               })
@@ -151,7 +151,7 @@ export class TicketsService {
   addMessage(ticket: any, message:string, method?:string) {
     let data = {
       to: ticket.customer,
-      from: 'Alphie Support <help@alphie.et-kc.com>',
+      from: `${environment.appConfig.supportName} <${environment.appConfig.supportEmail}>`,
       subject: `Re: ${ticket.subject}`,
       text: message.replace(/(<([^>]+)>)/gi, ""),
       html: message
@@ -161,13 +161,13 @@ export class TicketsService {
     results.subscribe( async() => {
       const user = await this.auth.GetUser();
       const now = Date.now();
-      const from = user ? user.displayName : 'Alphie Support';
+      const from = user ? user.displayName : '${environment.appConfig.supportName}';
       const responseDueAt = new Date(now + 24*60*60*1000);
       return this.afs.collection<any>('tickets').doc(ticket.id).set({
         'response_due' : method ? responseDueAt : null,
         'messages' : firebase.firestore.FieldValue.arrayUnion({
           'created' : new Date(now),
-          'from' : `${from} <help@alphie.et-kc.com>`,
+          'from' : `${from} <${environment.appConfig.supportEmail}>`,
           'html' : message,
           'response_due' : responseDueAt
         })

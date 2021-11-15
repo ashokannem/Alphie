@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-
+import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 
 @Component({
@@ -10,11 +10,13 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 })
 export class LoginComponent implements OnInit {
 
+  public config: any;
   public loginForm!: FormGroup;
 
   constructor( public authService: AuthService ) { }
 
   ngOnInit(): void {
+    this.config = environment.appConfig;
     this.loginForm = new FormGroup({
       'username' : new FormControl('', [Validators.required]),
       'password' : new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(12)])
@@ -22,7 +24,7 @@ export class LoginComponent implements OnInit {
   }
 
   attemptLogin() {
-    this.authService.SignIn(`${this.loginForm.controls['username'].value}@et-kc.com`, this.loginForm.controls['password'].value).then(() => {
+    this.authService.SignIn(`${this.loginForm.controls['username'].value}@${this.config.emailDomain}`, this.loginForm.controls['password'].value).then(() => {
 
     }).catch((error:any) => {
 
@@ -30,7 +32,9 @@ export class LoginComponent implements OnInit {
   }
 
   attemptLoginWithGoogle() {
-    this.authService.SignInWithGoogle();
+    if(this.config.allowGoogleLogin) {
+      this.authService.SignInWithGoogle();
+    }
   }
 
 }

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
-
+import { environment } from '../../../../environments/environment';
 import firebase from 'firebase/compat/app';
 
 @Injectable({
@@ -69,9 +69,12 @@ export class AuthService {
     return new Promise((resolve, reject) => {
 
       const provider = new firebase.auth.GoogleAuthProvider();
-      provider.setCustomParameters({
-        hd: 'et-kc.com'
-      });
+
+      if(environment.appConfig.lockGoogleLoginToDomain) {
+        provider.setCustomParameters({
+          hd: environment.appConfig.emailDomain
+        });
+      }
 
       this.afAuth.signInWithPopup(provider).then((userData) => {
         this.setUserData(userData.user).then(() => {
