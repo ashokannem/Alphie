@@ -40,6 +40,8 @@ export const newUserSetup = functions.auth.user().onCreate( async(user) => {
       }, { merge: true });
     }
 
+    resolve(user);
+
   })
 
 });
