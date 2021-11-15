@@ -1,8 +1,4 @@
-# Alphie
-
-Alphie is a self-hosted support and ticketing system built for Firebase on Angular.
-
-## Getting Started
+## Getting Started With Alphie
 
 Getting Alphie up and running is outlined below. 
 
