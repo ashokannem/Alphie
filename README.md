@@ -27,7 +27,9 @@ Visit the `docs` directory for installation instructions.
 
 ## Contributing
 
-If you would like to join the team and contribute to Alphie, please reach out by sending a message to `theCodeGeek#2291` on Discord.
+If you would like to join the team and contribute to Alphie, please reach out by showing your interest in the Contributors category of the Discussions tab.
+
+`https://github.com/ETMitch21/Alphie/discussions/categories/contributors`
 
 ## License
 
