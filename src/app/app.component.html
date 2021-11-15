@@ -57,9 +57,9 @@
                         </form>
                      </div>
                   </li>
-                  <li dropdown class="nav-item dropdown no-arrow mx-1">
+                  <!-- <li dropdown class="nav-item dropdown no-arrow mx-1">
                      <a class="nav-link dropdown-toggle"id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" dropdownToggle> <i class="fas fa-bell fa-fw"></i>
-                        <!-- Counter - Alerts --><span class="badge badge-danger badge-counter">3+</span> </a>
+                        <span class="badge badge-danger badge-counter">3+</span> </a>
                      <div *dropdownMenu class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
                         <h6 class="dropdown-header">
                            Alerts Center
@@ -85,7 +85,7 @@
                            <div>
                               <div class="small text-gray-500">December 2, 2019</div> Spending Alert: We've noticed unusually high spending for your account. </div>
                         </a> <a class="dropdown-item text-center small text-gray-500" >Show All Alerts</a> </div>
-                  </li>
+                  </li> -->
                   <li dropdown class="nav-item dropdown no-arrow mx-1" *ngIf="authService.allUserData | async as user;">
                      <a class="nav-link dropdown-toggle"id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" dropdownToggle> <i class="fas fa-envelope fa-fw"></i> <span *ngIf="unreadMessageCount > 0" class="badge badge-danger badge-counter">{{ unreadMessageCount < 10 ? unreadMessageCount : '9+' }}</span> </a>
                      <!-- Dropdown - Messages -->
