@@ -34,14 +34,14 @@
 							<div class="row gx-0">
 								<div class="col-sm-12 col-md-6 d-flex justify-content-between align-items-center">
 									<label class="control-label" for="none">Public Url</label>
-									<span class="d-block d-md-none text-primary float-end" tooltip="Copy URL"><a [routerLink] class="text-decoration-none" (click)="copyToClipboard(ticketPageUrl)"><i class="fas fa-copy"></i></a></span>
 								</div>
 								<div class="col-sm-12 col-md-6 d-flex justify-content-between align-items-center">
-									<label class="control-label" for="none">
-										{{ ticketPageUrl }}
-										<input type="text" #textToCopy class="d-none" disabled [ngModel]="ticketPageUrl" [ngModelOptions]="{standalone: true}" />
-									</label>
-									<span class="d-none d-md-block text-primary float-end" tooltip="Copy URL"><a [routerLink] class="text-decoration-none" (click)="copyToClipboard(ticketPageUrl)"><i class="fas fa-copy"></i></a></span>
+									<div class="input-group">
+										<input type="text" #textToCopy class="form-control" readonly [(ngModel)]="ticketPageUrl" [ngModelOptions]="{standalone: true}" />
+										<div class="input-group-text">
+											<a [routerLink] class="text-decoration-none text-primary" tooltip="Copy URL" (click)="copyToClipboard(ticketPageUrl)"><i class="fas fa-copy"></i></a>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
