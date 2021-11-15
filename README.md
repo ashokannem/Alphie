@@ -25,6 +25,9 @@ Alphie is a self-hosted, open-source support and ticketing system built for Fire
 
 Visit the `docs` directory for installation instructions.
 
+## Contributing
+
+If you would like to join the team and contribute to Alphie, please reach out by sending a message to `theCodeGeek#2291` on Discord.
 
 ## License
 
