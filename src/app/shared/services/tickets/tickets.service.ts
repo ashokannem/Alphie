@@ -15,6 +15,29 @@ export class TicketsService {
 
   constructor( private afs: AngularFirestore, private auth: AuthService, private aff: AngularFireFunctions, private router: Router ) {}
 
+  getUserTicketCount() {
+    return new Promise( async(resolve, reject) => {
+      let count = 0;
+      let assignedTicketCount = 0;
+      let { uid } = await this.auth.GetUser();
+      this.afs.collection('tickets').ref.where('users', '!=', null).get().then((ticketsSnapshot) => {
+        ticketsSnapshot.forEach((ticketSnapshot) => {
+          count++;
+          let ticket:any = ticketSnapshot.data();
+          let users = ticket.users;
+          if(users.length > 0) {
+            if(users.findIndex((user:any) => user === uid) > -1 && ticket.department !== 'closed') {
+              assignedTicketCount = (assignedTicketCount + 1);
+            }
+          }
+          if(count === (ticketsSnapshot.size-1)) {
+            resolve(assignedTicketCount);
+          }
+        })
+      })
+    });
+  }
+
   getBranding() {
     return this.afs.collection<any>('settings').doc('branding').valueChanges().pipe(map(data => {
       return data;
