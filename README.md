@@ -31,6 +31,22 @@ If you would like to join the team and contribute to Alphie, please reach out by
 
 `https://github.com/ETMitch21/Alphie/discussions/categories/contributors`
 
+## Submitting Issues
+
+If you have found an issue or a bug, please report it in the issues tab by following the `Bug report` template. Any issues submitted without using the template will be disregarded and closed.
+
+`https://github.com/ETMitch21/Alphie/issues/new?assignees=&labels=&template=bug_report.md&title=`
+
+## Submitting Feature Requests
+
+If you have an idea for an improvement or a new feature, please feel free to share it with us using the issues tab above by following the `Feature request` template. Any feature requests submitted without using the template will be disregarded and closed.
+
+`https://github.com/ETMitch21/Alphie/issues/new?assignees=&labels=&template=feature_request.md&title=`
+
+You may also create a new discussion in the `Ideas` category within the `Discussions` tab above.
+
+`https://github.com/ETMitch21/Alphie/discussions/new?category=ideas`
+
 ## License
 
 Copyright (c) 2021 Anchor Development
