@@ -1,0 +1,107 @@
+<div class="shadow-sm bg-card" *ngIf="userData">
+    <!-- Cover -->
+    <div class="h-24 overflow-hidden bg-cover" style="background-image: url(https://images.unsplash.com/photo-1614935981447-893ce3858657?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&h=300&q=80); background-position: center center;"></div>
+    <!-- Info -->
+    <div class="px-6 pb-6">
+        <div class="row g-0 align-items-end">
+            <div class="col-auto">
+                <!-- Avatar -->
+                <div class="avatar avatar-2xl border border-body border-4 mt-n10">
+                    <img alt="User Profile Photo" [src]=" userData?.uid | user:'photoURL' | async" class="rounded">
+                </div>
+            </div>
+            <div class="col ps-4 pt-4">
+                <!-- Pretitle -->
+                <h6 class="text-xs text-uppercase text-muted mb-1">
+                    {{ userData?.email }}@{{ config.emailDomain }}
+                </h6>
+                <!-- Title -->
+                <h1 class="h2">
+                    {{ userData?.displayName }}
+                </h1>
+            </div>
+            <div class="col-12 col-md-auto mt-2 mt-md-0 mb-md-3">
+                <!-- Button -->
+                <a [routerLink] (click)="authService.SignOut()" class="btn btn-sm btn-danger d-block d-md-inline-block">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-2 d-flex justify-content-center align-items-center">
+	<div class="card w-75">
+		<form [formGroup]="profileForm">
+			<div class="card-body p-0">
+				<div class="list-group list-group-flush">
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col-sm-12 col-md-6">
+								<label class="control-label" for="status">Status</label>
+							</div>
+							<div class="col-sm-12 col-md-6">
+								<select class="form-control" name="status" id="status" formControlName="status">
+									<option value="online">Online</option>
+									<option value="away">Away</option>
+									<option value="offline">Offline</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col-sm-12 col-md-6">
+								<label class="control-label" for="displayName">Display name</label>
+							</div>
+							<div class="col-sm-12 col-md-6">
+								<input type="text" formControlName="displayName" class="form-control" name="displayName" id="displayName" required minlength="2" />
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col-sm-12 col-md-6">
+								<label class="control-label" for="email">Email address</label>
+							</div>
+							<div class="col-sm-12 col-md-6">
+								<div class="input-group">
+									<input type="text" formControlName="email" class="form-control" name="email" id="email" required />
+									<span class="input-group-text">
+										@{{ config.emailDomain }}
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col-sm-12 col-md-6">
+								<label class="control-label" for="photoURL">Profile picture</label>
+							</div>
+							<div class="col-sm-12 col-md-6">
+								<input type="file" (change)="onFileSelect($event)" [(ngModel)]="profilePic" [ngModelOptions]="{standalone:true}" accept="image/*" class="form-control" name="photoURL" id="photoURL" />
+							</div>
+						</div>
+					</div>
+					<div class="list-group-item">
+						<div class="row gx-0">
+							<div class="col-sm-12 col-md-6">
+								<label class="control-label" for="displayName">Notifications</label>
+							</div>
+							<div class="col-sm-12 col-md-6">
+								<button [routerLink]="['/settings', 'notifications']" class="btn btn-outline-secondary w-100 btn-sm">Go to notifications <i class="fas fa-arrow-right fa-fw"></i></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div class="card-footer">
+			<button class="btn btn-sm btn-primary float-end" (click)="saveChanges()" [disabled]="!profileForm.valid || !profileForm.touched || saving">
+				<span *ngIf="!saving">Save</span>
+				<span *ngIf="saving"><i class="fas fa-circle-notch fa-spin"></i> Saving...</span>
+			</button>
+		</div>
+	</div>
+</div>

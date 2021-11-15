@@ -1,0 +1,22 @@
+
+
+.control-label {
+	margin-top: 0.5rem;
+}
+
+.form-switch .form-check-input {
+	width: 2.875em !important;
+	margin-top:  0.4rem;
+}
+
+@media screen and (max-width: 600px) { 
+	.card.w-75 {
+		width: 100% !important;
+	}
+	.control-label {
+		margin-top: 0;
+	}
+	.control-label.margin-stay {
+		margin-top: 0.5rem;
+	}
+}

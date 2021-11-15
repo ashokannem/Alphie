@@ -6,6 +6,7 @@ import { AngularFireAuthGuard, redirectUnauthorizedTo, redirectLoggedInTo } from
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { TicketsComponent } from './components/tickets/tickets.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 import { SettingsComponent } from './components/settings/settings.component';
 import { BrandingSettingsComponent } from './components/settings/branding-settings/branding-settings.component';
@@ -58,6 +59,14 @@ const routes: Routes = [
     canActivate: [AngularFireAuthGuard],
     data: {
       authGuardPipe: redirectLoggedInToDashboard
+    }
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: {
+      authGuardPipe: redirectUnauthorizedToLogin
     }
   },
   {

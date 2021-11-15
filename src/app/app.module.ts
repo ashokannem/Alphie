@@ -50,6 +50,7 @@ import { BrandingSettingsComponent } from './components/settings/branding-settin
 import { DepartmentSettingsComponent } from './components/settings/department-settings/department-settings.component';
 import { UserSettingsComponent } from './components/settings/user-settings/user-settings.component';
 import { InviteComponent } from './components/auth/invite/invite.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { InviteComponent } from './components/auth/invite/invite.component';
     DepartmentSettingsComponent,
     UserSettingsComponent,
     InviteComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,
