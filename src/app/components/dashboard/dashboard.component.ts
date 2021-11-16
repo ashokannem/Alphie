@@ -45,6 +45,10 @@ export class DashboardComponent implements OnInit, AfterContentInit {
 
       let setup:any = {data: { labels: [], datasets: [{label: 'Last month', data: [], fill: false, tension: 0.5, borderColor: 'transparent', backgroundColor: 'rgba(33, 160, 134, 0.8)'}, {label: 'This month', data: [], fill: false, tension: 0.5, borderColor: 'transparent', backgroundColor: 'rgba(80, 61, 140, 0.8)'} ] }, type: 'bar', options: { responsive: true, scales: { x: { grid: { display: false }, y: { grid: { display: false } } } }, plugins: { legend: { display: true, position: 'bottom' } } } };
 
+      if(this.ticketsByDepartmentChartSetup) {
+        this.ticketsByDepartmentChartSetup.destroy();
+      }
+
       Object.keys(observer.departments).forEach((key:any) => {
         if(observer.departments[key].key !== 'closed') {
           setup.data.labels[key] = observer.departments[key].value;

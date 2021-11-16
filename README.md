@@ -2,6 +2,7 @@
 
 Alphie is a self-hosted, open-source support and ticketing system built for Firebase on Angular 12 with Bootstrap 5.
 
+![Alphie Dashboard Screenshot](https://firebasestorage.googleapis.com/v0/b/alphie-4c836.appspot.com/o/internal%2Fscreencapture-localhost-4200-dashboard-2021-11-15-22_14_41.png?alt=media&token=10dcebc0-6687-4dd6-9208-6d52bba50390)
 
 ## Features
 
