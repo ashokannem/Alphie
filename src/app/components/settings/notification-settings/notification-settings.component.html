@@ -1,38 +1,179 @@
 
 <div class="d-flex justify-content-center align-items-center">
-	<div class="card w-75">
+	<div class="w-75">
 		<form [formGroup]="notificationForm">
-			<div class="card-body p-0">
-				<div class="card" *ngFor="let method of methods">
-					<div class="card-header">
-						{{ method | titlecase }}
+			<div class="p-0">
+				<div class="card mb-3">
+					<div class="card-header d-flex justify-content-between align-items-center">
+						<span>Push</span>
+						<div class="btn-group">
+							<button *ngIf="!notificationsAllowed" class="btn btn-primary btn-sm" (click)="requestPermission()">
+								Allow Notifications
+							</button>
+							<button *ngIf="notificationsAllowed" class="btn btn-danger btn-sm" (click)="removePermission()">
+								Remove Permission
+							</button>
+						</div>
+					</div>
+					<div class="card-body p-0" [collapse]="!notificationsAllowed">
+						<div class="list-group list-group-flush">
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">New Ticket Message</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="pushNewTicketMessage" formControlName="push-newTicketMessage">
+										<label class="form-check-label" for="pushNewTicketMessage">&nbsp;</label>
+									</div>
+								</div>
+							</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">New Ticket Created</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="pushNewTicketCreated" formControlName="push-newTicketCreated">
+										<label class="form-check-label" for="pushNewTicketCreated">&nbsp;</label>
+									</div>
+								</div>
+							</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">Ticket Department Changed</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="pushTicketDepartmentChanged" formControlName="push-ticketDepartmentChanged">
+										<label class="form-check-label" for="pushTicketDepartmentChanged">&nbsp;</label>
+									</div>
+								</div>
+							</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">Ticket Priority Changed</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="pushTicketPriorityChanged" formControlName="push-ticketPriorityChanged">
+										<label class="form-check-label" for="pushTicketPriorityChanged">&nbsp;</label>
+									</div>
+								</div>
+							</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">Ticket User Added</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="pushTicketUserAdded" formControlName="push-ticketUserAdded">
+										<label class="form-check-label" for="pushTicketUserAdded">&nbsp;</label>
+									</div>
+								</div>
+							</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">Ticket User Removed</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="pushTicketUserRemoved" formControlName="push-ticketUserRemoved">
+										<label class="form-check-label" for="pushTicketUserRemoved">&nbsp;</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-footer" *ngIf="notificationsAllowed">
+						<button class="btn btn-sm btn-primary float-end" (click)="saveChanges()" [disabled]="!notificationForm.valid || !notificationForm.touched || saving">
+							<span *ngIf="!saving">Save</span>
+							<span *ngIf="saving"><i class="fas fa-circle-notch fa-spin"></i> Saving...</span>
+						</button>
+					</div>
+				</div>
+				<div class="card mb-3">
+					<div class="card-header d-flex justify-content-between align-items-center">
+						<span>Email</span>
 					</div>
 					<div class="card-body p-0">
 						<div class="list-group list-group-flush">
-							<ng-container *ngFor="let action of actions">
-								<div class="list-group-item" *ngIf="action.method === method">
-									<div class="row gx-0">
-										<div class="col">
-											<label class="control-label margin-stay">{{ action.value | titlecase }}</label>
-										</div>
-										<div class="col form-check form-switch text-right">
-			  								<input class="form-check-input" type="checkbox" role="switch" id="action" [formControlName]="action.formControl">
-			  								<label class="form-check-label" for="action">&nbsp;</label>
-										</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">New Ticket Message</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="emailNewTicketMessage" formControlName="email-newTicketMessage">
+										<label class="form-check-label" for="emailNewTicketMessage">&nbsp;</label>
 									</div>
 								</div>
-							</ng-container>
+							</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">New Ticket Created</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="emailNewTicketCreated" formControlName="email-newTicketCreated">
+										<label class="form-check-label" for="emailNewTicketCreated">&nbsp;</label>
+									</div>
+								</div>
+							</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">Ticket Department Changed</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="emailTicketDepartmentChanged" formControlName="email-ticketDepartmentChanged">
+										<label class="form-check-label" for="emailTicketDepartmentChanged">&nbsp;</label>
+									</div>
+								</div>
+							</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">Ticket Priority Changed</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="emailTicketPriorityChanged" formControlName="email-ticketPriorityChanged">
+										<label class="form-check-label" for="emailTicketPriorityChanged">&nbsp;</label>
+									</div>
+								</div>
+							</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">Ticket User Added</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="emailTicketUserAdded" formControlName="email-ticketUserAdded">
+										<label class="form-check-label" for="emailTicketUserAdded">&nbsp;</label>
+									</div>
+								</div>
+							</div>
+							<div class="list-group-item">
+								<div class="row gx-0">
+									<div class="col">
+										<label class="control-label margin-stay">Ticket User Removed</label>
+									</div>
+									<div class="col form-check form-switch text-right">
+										<input class="form-check-input" type="checkbox" role="switch" id="emailTicketUserRemoved" formControlName="email-ticketUserRemoved">
+										<label class="form-check-label" for="emailTicketUserRemoved">&nbsp;</label>
+									</div>
+								</div>
+							</div>
 						</div>
+					</div>
+					<div class="card-footer">
+						<button class="btn btn-sm btn-primary float-end" (click)="saveChanges()" [disabled]="!notificationForm.valid || !notificationForm.touched || saving">
+							<span *ngIf="!saving">Save</span>
+							<span *ngIf="saving"><i class="fas fa-circle-notch fa-spin"></i> Saving...</span>
+						</button>
 					</div>
 				</div>
 			</div>
 		</form>
-		<div class="card-footer">
-			<button class="btn btn-sm btn-primary float-end" (click)="saveChanges()" [disabled]="!notificationForm.valid || !notificationForm.touched || saving">
-				<span *ngIf="!saving">Save</span>
-				<span *ngIf="saving"><i class="fas fa-circle-notch fa-spin"></i> Saving...</span>
-			</button>
-		</div>
 	</div>
 </div>
-

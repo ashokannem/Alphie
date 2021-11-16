@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, Inject, Renderer2, HostListener, TemplateRef } from '@angular/core';
 import { DOCUMENT } from  '@angular/common';
 import { Event,NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { AuthService } from './shared/services/auth/auth.service';
 import { MessagesService } from './shared/services/messages/messages.service';
 import { SetupService } from './shared/services/setup/setup.service';
@@ -40,7 +41,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public unreadMessageCount: number = 0;
   public currentUserUID!: string;
 
-  constructor( @Inject(DOCUMENT) private document: Document, private toast: ToastrService, private renderer: Renderer2, private router: Router, private setupService: SetupService, public authService:AuthService, public messageService: MessagesService, private modalService: BsModalService ) {
+  constructor( @Inject(DOCUMENT) private document: Document, private toast: ToastrService, private afMessaging: AngularFireMessaging, private renderer: Renderer2, private router: Router, private setupService: SetupService, public authService:AuthService, public messageService: MessagesService, private modalService: BsModalService ) {
     this.router.events.subscribe((event: Event) => {
       switch(true) {
         case event instanceof NavigationStart: {
@@ -73,6 +74,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+
+    this.afMessaging.messages.subscribe((message) => {
+      this.toast.info(message.notification?.body, message.notification?.title);
+    });
 
     this.setupService.CheckSetup().then(() => {
 

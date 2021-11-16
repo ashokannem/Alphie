@@ -9,7 +9,7 @@
 }
 
 @media screen and (max-width: 600px) { 
-	.card.w-75 {
+	.w-75 {
 		width: 100% !important;
 	}
 	.control-label {

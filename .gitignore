@@ -3,6 +3,7 @@
 # configuration files
 /src/environments
 /.firebaserc
+/src/firebase-messaging-sw.js
 
 # compiled output
 /dist

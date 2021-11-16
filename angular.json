@@ -27,7 +27,9 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/manifest.webmanifest",
+              "src/firebase-messaging-sw.js"
             ],
             "styles": [
               "node_modules/@ctrl/ngx-emoji-mart/picker.css",
@@ -97,7 +99,8 @@
             "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/firebase-messaging-sw.js"
             ],
             "styles": [
               "node_modules/@ctrl/ngx-emoji-mart/picker.css",
