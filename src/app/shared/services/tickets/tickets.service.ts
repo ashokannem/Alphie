@@ -8,6 +8,8 @@ import { Observable, combineLatest, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import firebase from 'firebase/compat/app';
 
+import * as moment from 'moment';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,27 +17,107 @@ export class TicketsService {
 
   constructor( private afs: AngularFirestore, private auth: AuthService, private aff: AngularFireFunctions, private router: Router ) {}
 
+  getMonthlyTicketsByDepartment(month:number, department:string) {
+    return new Promise((resolve, reject) => {
+      let count = 0;
+      let ticketCount = 0;
+      this.afs.collection('tickets').ref.get().then((ticketsSnapshot) => {
+        if(ticketsSnapshot.empty) {
+          resolve(ticketCount);
+        } else {
+          ticketsSnapshot.forEach((ticketSnapshot) => {
+            count++;
+            let ticket:any = ticketSnapshot.data();
+            let ticketDepartment = ticket.previousDepartment;
+            let ticketCreatedMonth = moment(ticket.created.seconds*1000).get('month');
+            if(ticketCreatedMonth === month && ticketDepartment === department) {
+              ticketCount++;
+            }
+            if(count === (ticketsSnapshot.size-1)) {
+              resolve(ticketCount);
+            }
+          })
+        }
+      });
+    });
+  }
+
   getUserTicketCount() {
     return new Promise( async(resolve, reject) => {
       let count = 0;
       let assignedTicketCount = 0;
       let { uid } = await this.auth.GetUser();
       this.afs.collection('tickets').ref.where('users', '!=', null).get().then((ticketsSnapshot) => {
-        ticketsSnapshot.forEach((ticketSnapshot) => {
-          count++;
-          let ticket:any = ticketSnapshot.data();
-          let users = ticket.users;
-          if(users.length > 0) {
-            if(users.findIndex((user:any) => user === uid) > -1 && ticket.department !== 'closed') {
-              assignedTicketCount = (assignedTicketCount + 1);
+        if(ticketsSnapshot.empty) {
+          resolve(assignedTicketCount);
+        } else {
+          ticketsSnapshot.forEach((ticketSnapshot) => {
+            count++;
+            let ticket:any = ticketSnapshot.data();
+            let users = ticket.users;
+            if(users.length > 0) {
+              if(users.findIndex((user:any) => user === uid) > -1 && ticket.department !== 'closed') {
+                assignedTicketCount = (assignedTicketCount + 1);
+              }
             }
-          }
-          if(count === (ticketsSnapshot.size-1)) {
-            resolve(assignedTicketCount);
-          }
-        })
+            if(count === (ticketsSnapshot.size-1)) {
+              resolve(assignedTicketCount);
+            }
+          })
+        }
       })
     });
+  }
+
+  getThisMonthsTicketCount() {
+    return new Promise( async(resolve, reject) => {
+      let count = 0;
+      let createdTicketCount = 0;
+      this.afs.collection('tickets').ref.get().then((ticketsSnapshot) => {
+        if(ticketsSnapshot.empty) {
+          resolve(createdTicketCount);
+        } else {
+          ticketsSnapshot.forEach((ticketSnapshot) => {
+            count++;
+            let ticket:any = ticketSnapshot.data();
+            let today:Date = new Date();
+            let created:Date = new Date(ticket.created.seconds*1000);
+            moment(created).isSame(today, 'months') ? createdTicketCount++ : null;
+            if(count === (ticketsSnapshot.size-1)) {
+              resolve(createdTicketCount);
+            }
+          })
+        }
+      })
+    })
+  }
+
+  getUsersAssignedTicketsThisMonth() {
+    return new Promise( async(resolve, reject) => {
+      let count = 0;
+      let createdTicketCount = 0;
+      let { uid } = await this.auth.GetUser();
+      this.afs.collection('tickets').ref.get().then((ticketsSnapshot) => {
+        if(ticketsSnapshot.empty) {
+          resolve(createdTicketCount);
+        } else {
+          ticketsSnapshot.forEach((ticketSnapshot) => {
+            count++;
+            let ticket:any = ticketSnapshot.data();
+            let today:Date = new Date();
+            let created:Date = new Date(ticket.created.seconds*1000);
+            if(ticket.users.length > 0) {
+              if(ticket.users.findIndex((user:any) => user === uid) > -1) {
+                moment(created).isSame(today, 'months') ? createdTicketCount++ : null;
+              }
+            }
+            if(count === (ticketsSnapshot.size-1)) {
+              resolve(createdTicketCount);
+            }
+          })
+        }
+      })
+    })
   }
 
   getBranding() {
@@ -60,6 +142,7 @@ export class TicketsService {
 
   getDepartments() {
     return this.afs.collection<any>('settings').doc('tickets').collection('departments').valueChanges().pipe(map(data => {
+      console.log('Service', data);
       return data;
     }));
   }
@@ -121,6 +204,7 @@ export class TicketsService {
         'number' : ticketNumber,
         'created' : new Date(now),
         'customer' : `${data.customerName} <${data.customerEmail}>`,
+        'previousDepartment' : data.department,
         'department' : data.department,
         'method' : method ? method : 'manual',
         'preview' : data.body.substring(0, 40),
