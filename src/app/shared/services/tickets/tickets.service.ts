@@ -268,7 +268,7 @@ export class TicketsService {
     results.subscribe( async() => {
       const user = await this.auth.GetUser();
       const now = Date.now();
-      const from = user ? user.displayName : '${environment.appConfig.supportName}';
+      const from = user ? user.displayName : `${environment.appConfig.supportName}`;
       const responseDueAt = new Date(now + 24*60*60*1000);
       return this.afs.collection<any>('tickets').doc(ticket.id).set({
         'response_due' : method ? responseDueAt : null,
