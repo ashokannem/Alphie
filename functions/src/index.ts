@@ -36,6 +36,14 @@ export const newUserSetup = functions.auth.user().onCreate( async(user) => {
           'ticketPriorityChanged' : true,
           'ticketUserAdded' : true,
           'ticketUserRemoved' : true
+        },
+        'push' : {
+          'newTicketCreated' : true,
+          'newTicketMessage' : true,
+          'ticketDepartmentChanged' : true,
+          'ticketPriorityChanged' : true,
+          'ticketUserAdded' : true,
+          'ticketUserRemoved' : true
         }
       }, { merge: true });
     }
@@ -160,6 +168,49 @@ async function sendEmail(data:any, action:string, ignoringUser?:string) {
   });
 }
 
+async function sendPush(data:any, action:string, ignoringUser?:string) {
+  return new Promise( async(resolve, reject) => {
+    let ref = admin.firestore().collection('users');
+    let snapshot = await ref.get(); 
+    let ran = 0;
+    snapshot.forEach( async(doc:any) => {
+      let user = doc.data();
+      let prefRef = admin.firestore().collection('users').doc(doc.id).collection('preferences').doc('notifications');
+      let prefDoc = await prefRef.get();
+      if(prefDoc.exists) {
+        let prefs = prefDoc.data();
+        if(prefs.push[action]) {
+          let uid = user.uid;
+          admin.firestore().collection('webTokenToUsers').where('uid', '==', uid).get().then((userDevices:any) => {
+            if(!userDevices.empty) {
+              userDevices.forEach((doc:any) => {
+                let token = doc.data().token;
+                const payload = {
+                  token: token,
+                  notification: {
+                    title: data.text,
+                    body: data.subject
+                  },
+                  data: {
+                    body: data.subject
+                  }
+                }
+                admin.messaging().send(payload).then(() => {
+
+                });
+              })
+            }
+          })
+        }
+      }
+      ran++;
+      if(ran === snapshot.size) {
+        resolve('all users notified');
+      }
+    });
+  })
+}
+
 export const sendUserInvites = functions.firestore.document('invites/{inviteID}').onCreate((snap:any, context:any) => {
   return new Promise( async(resolve, reject) => {
     const newValue = snap.data();
@@ -194,6 +245,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
           'text' : 'A ticket had the priority updated.',
           'html' : `Ticket #${document.number} had the priority changed from ${oldDocument.priority} to ${document.priority}`,
         }
+        sendPush(message, 'ticketPriorityChanged');
         return sendEmail(message, 'ticketPriorityChanged');
       } else if(document.department !== oldDocument.department) {
         // The department of the ticket was changed.
@@ -203,6 +255,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
           'text' : 'A ticket had the department updated.',
           'html' : `Ticket #${document.number} had the department changed from ${oldDocument.department} to ${document.department}`,
         }
+        sendPush(message, 'ticketDepartmentChanged');
         return sendEmail(message, 'ticketDepartmentChanged');
       } else if(document.users !== oldDocument.users) {
         // The users list of the ticket was updated.
@@ -214,6 +267,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
             'text' : 'A ticket had users added.',
             'html' : `Ticket #${document.number} had users added, check out your admin panel to view it.`,
           }
+          sendPush(message, 'ticketUserAdded');
           return sendEmail(message, 'ticketUserAdded');
         } else if(document.users.length < oldDocument.users.length) {
           // Users have been removed.
@@ -223,6 +277,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
             'text' : 'A ticket had users removed.',
             'html' : `Ticket #${document.number} had users removed, check out your admin panel to view it.`,
           }
+          sendPush(message, 'ticketUserRemoved');
           return sendEmail(message, 'ticketUserRemoved');
         } else {
           return 'unhandled-action';
@@ -235,6 +290,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
           'text' : 'A ticket received a new message.',
           'html' : `Ticket #${document.number} had a new message received, check out your admin panel to view it.`,
         }
+        sendPush(message, 'newTicketMessage');
         return sendEmail(message, 'newTicketMessage');
       } else {
         return 'unhandled-action';
@@ -248,6 +304,7 @@ export const manageTicketUserNotifications = functions.firestore.document('ticke
         'text' : 'A new ticket was created for your company, Check it out!',
         'html' : `A new ticket with the subject of, ${document.subject} was just created. Visit your admin panel to begin working on it.`,
       }
+      sendPush(message, 'newTicketCreated');
       return sendEmail(message, 'newTicketCreated', ticketCreatedBy);
     }
   } else {

@@ -38,19 +38,17 @@ export class NewTicketComponent implements OnInit {
     this.ticketsService.getSettings().subscribe((ticketSettings) => {
       if(ticketSettings) {
         this.settings = ticketSettings;
-      }
-    });
-    this.ticketsService.getDepartments().subscribe((ticketDepartments) => {
-      if(ticketDepartments) {
-        ticketDepartments.forEach((ticketDepartment) => {
-          if(ticketDepartment.key !== 'closed') {
-            if(ticketDepartment.key == 'undetermined') {
-              ticketDepartment.value = 'Unknown';
+        if(ticketSettings.departments) {
+          ticketSettings.departments.forEach((ticketDepartment:any) => {
+            if(ticketDepartment.key !== 'closed') {
+              if(ticketDepartment.key == 'undetermined') {
+                ticketDepartment.value = 'Unknown';
+              }
+              this.departments.push(ticketDepartment);
             }
-            this.departments.push(ticketDepartment);
-          }
-        });
-        this.departments.sort((a:any, b:any) => a.order - b.order );
+          });
+          this.departments.sort((a:any, b:any) => a.order - b.order );
+        }
       }
     });
   }
