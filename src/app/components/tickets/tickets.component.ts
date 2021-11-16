@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { Subscription, interval } from 'rxjs';
@@ -11,6 +11,8 @@ import { TicketsService } from '../../shared/services/tickets/tickets.service';
   styleUrls: ['./tickets.component.css']
 })
 export class TicketsComponent implements OnInit, OnDestroy {
+
+  @ViewChild('newTicketModal', { static: true }) newTicketModalTemplate!: TemplateRef<unknown>;
 
   public newTicketData: any = [];
 
@@ -66,7 +68,14 @@ export class TicketsComponent implements OnInit, OnDestroy {
             })
           }
         }
-      })
+      });
+      this.route.queryParams.subscribe((queryParams:any) => {
+        if(queryParams) {
+          if(queryParams.action === 'create') {
+            this.newTicket(this.newTicketModalTemplate);
+          } 
+        }
+      });
       settings.departments.forEach((department:any, index:number) => {
         if(!this.tickets[department.key]) {
           this.tickets[department.key] = [];

@@ -78,7 +78,7 @@
                               <img src="./assets/img/undraw_Begin_chat_re_v0lw.png" width="120" />
                               <h5>No Messages</h5>
                               <p>You currently have no messages</p>
-                              <button class="btn btn-primary btn-sm mt-3" [routerLink]="['/messages']">Create Message</button>
+                              <button class="btn btn-primary btn-sm mt-3" [routerLink]="['/messages']" [queryParams]="{action:'create'}">Create Message</button>
                            </div>
                         </ng-template>
 

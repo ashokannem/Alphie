@@ -17,13 +17,13 @@
         </div>
         <div class="col-md-6 col-12 text-md-end">
             <div class="mx-n1">
-                <a [routerLink]="['/tickets']" class="btn d-inline-flex btn-sm btn-primary mx-1">
+                <a [routerLink]="['/tickets']" [queryParams]="{action:'create'}" class="btn d-inline-flex btn-sm btn-primary mx-1">
                     <span class=" pe-2">
                         <i class="fa fa-ticket"></i>
                     </span>
                     <span>Create ticket</span>
                 </a>
-                <a [routerLink]="['/messages']" class="btn d-inline-flex btn-sm btn-neutral border-base mx-1">
+                <a [routerLink]="['/messages']" [queryParams]="{action:'create'}" class="btn d-inline-flex btn-sm btn-neutral border-base mx-1">
                     <span class=" pe-2">
                         <i class="bi bi-chat"></i>
                     </span>

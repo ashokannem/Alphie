@@ -25,6 +25,7 @@ export class MessagesComponent implements OnInit, OnDestroy, AfterViewInit {
     'message' : new FormControl('', [Validators.required])
   });
 
+  @ViewChild('newModalTemplate', { static: true }) newMessageModalTemplate!: TemplateRef<unknown>;
   @ViewChild('newMsgInput') private newMsgInput!: ElementRef;
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
@@ -79,7 +80,14 @@ export class MessagesComponent implements OnInit, OnDestroy, AfterViewInit {
         if(params.id) {
           this.selectChat(params.id);
         }
-      })
+      });
+      this.route.queryParams.subscribe((queryParams:any) => {
+        if(queryParams) {
+          if(queryParams.action === 'create') {
+            this.openModal(this.newMessageModalTemplate);
+          } 
+        }
+      });
     });
   }
 
