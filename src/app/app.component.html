@@ -36,35 +36,43 @@
                   <button class="rounded-circle border-0" id="sidebarToggle" (click)="toggleSidebar()"> <i class="fa fa-fw" [ngClass]=" isSidebarToggled ? 'fa-chevron-right' : 'fa-chevron-left' "></i> </button>
                </div>
                <ul class="navbar-nav ml-auto">
-                  <!-- <li dropdown class="nav-item dropdown no-arrow mx-1">
+                  <li dropdown class="nav-item dropdown no-arrow mx-1">
                      <a class="nav-link dropdown-toggle"id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" dropdownToggle> <i class="fas fa-bell fa-fw"></i>
-                        <span class="badge badge-danger badge-counter">3+</span> </a>
-                     <div *dropdownMenu class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                        <span class="badge badge-danger badge-counter" *ngIf="unreadNotificationCount > 0">
+                           {{ unreadNotificationCount < 10 ? unreadNotificationCount : '9+' }}
+                        </span> </a>
+                     <div *dropdownMenu class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in fancyDropdown" aria-labelledby="alertsDropdown">
                         <h6 class="dropdown-header">
                            Alerts Center
                         </h6>
-                        <a class="dropdown-item d-flex align-items-center" >
-                           <div class="mr-3">
-                              <div class="icon-circle bg-primary"> <i class="fas fa-file-alt text-white"></i> </div>
+
+                        <ng-template #noNotifications>
+                           <div class="p-3 text-center noMessages">
+                              <img src="./assets/img/undraw_notify_re_65on.svg" class="mt-2" width="120" />
+                              <h5>No Alerts</h5>
+                              <p>You currently have no alerts</p>
                            </div>
-                           <div>
-                              <div class="small text-gray-500">December 12, 2019</div> <span class="font-weight-bold">A new monthly report is ready to download!</span> </div>
-                        </a>
-                        <a class="dropdown-item d-flex align-items-center" >
-                           <div class="mr-3">
-                              <div class="icon-circle bg-success"> <i class="fas fa-donate text-white"></i> </div>
-                           </div>
-                           <div>
-                              <div class="small text-gray-500">December 7, 2019</div> $290.29 has been deposited into your account! </div>
-                        </a>
-                        <a class="dropdown-item d-flex align-items-center" >
-                           <div class="mr-3">
-                              <div class="icon-circle bg-warning"> <i class="fas fa-exclamation-triangle text-white"></i> </div>
-                           </div>
-                           <div>
-                              <div class="small text-gray-500">December 2, 2019</div> Spending Alert: We've noticed unusually high spending for your account. </div>
-                        </a> <a class="dropdown-item text-center small text-gray-500" >Show All Alerts</a> </div>
-                  </li> -->
+                        </ng-template>
+
+                        <div class="messageContainer" *ngIf="notifications.length > 0; else noNotifications">
+                           <a [routerLink] (click)="notificationService.markAsRead(notification.id)" *ngFor="let notification of notifications" class="dropdown-item d-flex align-items-center" >
+                              <div class="mr-3">
+                                 <div class="icon-circle" [ngClass]="notification.read === false ? 'bg-danger' : 'bg-primary' "> 
+                                    <i class="fas fa-exclamation text-white"></i> 
+                                 </div>
+                              </div>
+                              <div>
+                                 <div class="small text-gray-500">
+                                    {{ notification.delivered.seconds*1000 | amTimeAgo }}
+                                 </div> 
+                                 <span class="font-weight-bold">
+                                    {{ notification.body }}
+                                 </span>
+                              </div>
+                           </a>
+                        </div>
+                     </div>
+                  </li>
                   <li dropdown class="nav-item dropdown no-arrow mx-1" *ngIf="authService.allUserData | async as user;">
                      <a class="nav-link dropdown-toggle"id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" dropdownToggle> <i class="fas fa-envelope fa-fw"></i> <span *ngIf="unreadMessageCount > 0" class="badge badge-danger badge-counter">{{ unreadMessageCount < 10 ? unreadMessageCount : '9+' }}</span> </a>
                      <!-- Dropdown - Messages -->

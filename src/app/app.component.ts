@@ -1,8 +1,11 @@
 import { Component, OnInit, AfterViewInit, Inject, Renderer2, HostListener, TemplateRef } from '@angular/core';
 import { DOCUMENT } from  '@angular/common';
+import { Subject } from 'rxjs';
 import { Event,NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { AuthService } from './shared/services/auth/auth.service';
+import { UsersService } from './shared/services/users/users.service';
+import { NotificationsService } from './shared/services/notifications/notifications.service';
 import { MessagesService } from './shared/services/messages/messages.service';
 import { SetupService } from './shared/services/setup/setup.service';
 import { ToastrService } from 'ngx-toastr';
@@ -18,6 +21,20 @@ import { BsDropdownConfig } from 'ngx-bootstrap/dropdown';
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
+  @HostListener('window:keydown')
+  @HostListener('window:mousedown')
+  @HostListener('window:focus')
+  async checkUserActivity() {
+    clearTimeout(this.timeoutId);
+
+    let { uid } = await this.authService.GetUser();
+    this.userService.UpdateUser(uid, { status: 'online' });
+
+    this.checkTimeOut();
+  }
+  userInactive: Subject<any> = new Subject();
+  timeoutId!: any;
+
   @HostListener('window:resize', ['$event'])
   onResize(event:any) {
     if(event.target.innerWidth <= 599) {
@@ -25,6 +42,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     } else {
       this.isSidebarCollapsed = false;
     }
+  }
+
+  @HostListener('window:blur')
+  async checkTabVisibility() {
+    clearTimeout(this.timeoutId);
+
+    let { uid } = await this.authService.GetUser();
+    this.userService.UpdateUser(uid, { status: 'away' });
   }
 
   public modalRef?: BsModalRef;
@@ -39,9 +64,20 @@ export class AppComponent implements OnInit, AfterViewInit {
   public page!: string;
   public userDirectMessages: any = [];
   public unreadMessageCount: number = 0;
+  public notifications: any = [];
+  public unreadNotificationCount: number = 0;
   public currentUserUID!: string;
+  public user!: any;
 
-  constructor( @Inject(DOCUMENT) private document: Document, private toast: ToastrService, private afMessaging: AngularFireMessaging, private renderer: Renderer2, private router: Router, private setupService: SetupService, public authService:AuthService, public messageService: MessagesService, private modalService: BsModalService ) {
+  constructor( @Inject(DOCUMENT) private document: Document, private toast: ToastrService, private afMessaging: AngularFireMessaging, private renderer: Renderer2, private router: Router, private userService: UsersService, private setupService: SetupService, public authService:AuthService, public messageService: MessagesService, private modalService: BsModalService, public notificationService: NotificationsService ) {
+    this.checkTimeOut();
+    this.userInactive.subscribe( async(message) => {
+      let { uid } = await this.authService.GetUser();
+      this.userService.UpdateUser(uid, { status: 'away' });
+    });
+    this.authService.allUserData.subscribe((userData:any) => {
+      this.user = userData;
+    });
     this.router.events.subscribe((event: Event) => {
       switch(true) {
         case event instanceof NavigationStart: {
@@ -76,7 +112,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     this.afMessaging.messages.subscribe((message) => {
-      this.toast.info(message.notification?.body, message.notification?.title);
+      console.log(message);
+      if(this.user.status === 'online') {
+        this.toast.info(message.notification?.body, message.notification?.title);
+      } else {
+        // save to users notifications
+        this.notificationService.AddNotification(message.from, message.notification);
+      }
     });
 
     this.setupService.CheckSetup().then(() => {
@@ -128,8 +170,24 @@ export class AppComponent implements OnInit, AfterViewInit {
           });
         });
 
+        this.notificationService.userNotifications.subscribe((notifications:any) => {
+          this.notifications = [];
+          this.unreadNotificationCount = 0;
+          notifications.forEach((notification:any) => {
+            this.notifications.push({id: notification.payload.doc.id, ...notification.payload.doc.data()});
+            if(!notification.payload.doc.data().read) {
+              this.unreadNotificationCount++;
+            }
+            this.notifications.sort((a:any, b:any) => a.created - b.created);
+          });
+        });
+
       }
     })
+  }
+
+  checkTimeOut() {
+    this.timeoutId = setTimeout(() => this.userInactive.next("User has been inactive for 60 seconds"), 60000);
   }
 
   toggleSidebar() {
